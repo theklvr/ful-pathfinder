@@ -102,9 +102,9 @@ Done when: a student can find a place by its common nickname.
 Done when: the surveyed path network is visible on the map.
 
 ### Day 8: A* implementation
-- [ ] Implement `haversine.js`, `graph.js` (adjacency list from edges), and `astar.js` per `docs/ARCHITECTURE.md`.
-- [ ] Add a Dijkstra fallback and a small test that both return the same shortest path on a known example.
-- [ ] Commit.
+- [x] Implement `haversine.js`, `graph.js` (adjacency list from edges), and `astar.js` per `docs/ARCHITECTURE.md`.
+- [x] Add a Dijkstra fallback and a small test that both return the same shortest path on a known example (`npm test`).
+- [x] Commit.
 
 > Prompt: "Do Day 8: implement haversine, the adjacency-list graph builder, and A* (with a Dijkstra fallback), plus a test proving they agree on a known route. Then stop."
 
