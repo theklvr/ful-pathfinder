@@ -1,12 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { Map, NavigationControl } from 'maplibre-gl';
+import { Map, NavigationControl, addProtocol } from 'maplibre-gl';
+import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { blankStyle } from './style';
+import { buildStyle } from './style';
+
+const protocol = new Protocol();
+addProtocol('pmtiles', protocol.tile);
 
 // Felele (permanent site) campus, Federal University Lokoja.
-// Approximate, to be corrected once survey data gives a real campus centroid.
-const FELELE_CENTER = [6.74, 7.8];
-const FELELE_ZOOM = 16;
+// Source: Wikipedia/Wikidata (7°51'34"N 6°41'01"E) — a public reference, not a
+// ground survey point. Correct once docs/SURVEY-GUIDE.md data comes in.
+const FELELE_CENTER = [6.68361, 7.85944];
+const FELELE_ZOOM = 15;
 
 export default function MapView() {
   const containerRef = useRef(null);
@@ -15,7 +20,7 @@ export default function MapView() {
   useEffect(() => {
     mapRef.current = new Map({
       container: containerRef.current,
-      style: blankStyle,
+      style: buildStyle(),
       center: FELELE_CENTER,
       zoom: FELELE_ZOOM,
     });

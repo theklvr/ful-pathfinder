@@ -35,10 +35,10 @@ See `docs/SURVEY-GUIDE.md` for the how. This is the real bottleneck. Start it im
 Done when: `npm run dev` shows a blank interactive map.
 
 ### Day 2: Real base map of Lokoja
-- [ ] Install the `pmtiles` CLI. Download the Protomaps daily world build and extract a small bounding box around Lokoja into `public/map/felele.pmtiles`. If the download is too large, tell me and suggest the smallest workable region.
-- [ ] Wire the PMTiles protocol into MapLibre and apply a Protomaps basemap style.
-- [ ] Confirm the map shows Lokoja streets and features, panning and zooming smoothly.
-- [ ] Commit.
+- [x] Install the `pmtiles` CLI (go-pmtiles v1.31.2). Extract a small bounding box around Lokoja town and Felele campus (bbox 6.60,7.75,6.82,7.92, zoom 0-15) from the Protomaps daily build straight off the remote file via HTTP range requests (no full planet download needed) into `public/map/felele.pmtiles` (~2.8 MB).
+- [x] Wire the PMTiles protocol into MapLibre and apply a Protomaps basemap style (`@protomaps/basemaps`, light flavor).
+- [x] Confirm the map shows Lokoja streets and features, panning and zooming smoothly (verified tile content and a clean dev server run; visually confirm in your browser too).
+- [x] Commit.
 
 > Prompt: "Do Day 2: get a small Lokoja Protomaps PMTiles extract into public/map/felele.pmtiles and render it with MapLibre using a Protomaps style. Walk me through any CLI step I need to run myself. Then stop."
 

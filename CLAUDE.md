@@ -55,3 +55,9 @@ Three tables. Full schema and rationale are in `docs/ARCHITECTURE.md`.
 - `npm run lint` — lint with oxlint
 
 Supabase project: `ful-pathfinder` (ref `qvwgeowgidwzyaztyhdu`, region `eu-west-1`, free tier), in the "theklvr's Org" organization. Schema lives in `supabase/migrations/`; seed scripts in `supabase/seed/`. Requires a local `.env` (see `.env.example`) with the project URL and anon/publishable key, not committed.
+
+`public/map/felele.pmtiles` was produced with the [go-pmtiles CLI](https://github.com/protomaps/go-pmtiles) (not an npm dependency, install separately), extracting bbox `6.60,7.75,6.82,7.92` at zoom 0-15 from a Protomaps daily planet build via HTTP range requests:
+```
+pmtiles extract https://build.protomaps.com/<YYYYMMDD>.pmtiles public/map/felele.pmtiles --bbox=6.60,7.75,6.82,7.92 --maxzoom=18
+```
+Re-run with a newer date or a wider bbox if the region needs to grow.
