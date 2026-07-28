@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Map as MaplibreMap, NavigationControl, Marker, addProtocol } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -15,10 +15,11 @@ const FELELE_CENTER = [6.68361, 7.85944];
 const FELELE_ZOOM = 15;
 const PLACE_ZOOM = 18;
 
-const MapView = forwardRef(function MapView({ places, onPlaceClick }, ref) {
+const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], onPlaceClick }, ref) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef(new Map());
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   useImperativeHandle(ref, () => ({
     flyTo(place) {
@@ -35,12 +36,63 @@ const MapView = forwardRef(function MapView({ places, onPlaceClick }, ref) {
     });
 
     mapRef.current.addControl(new NavigationControl(), 'top-right');
+    mapRef.current.on('load', () => setMapLoaded(true));
+
+    // Exposed for debugging via the browser console or CDP — the previous
+    // blank-screen bug (see PROGRESS.md) was hard to diagnose without this.
+    window.__mapErrors = [];
+    mapRef.current.on('error', (e) => window.__mapErrors.push(String(e.error?.message || e.error)));
+    window.__map = mapRef.current;
 
     return () => {
       mapRef.current.remove();
       mapRef.current = null;
     };
   }, []);
+
+  // Debug layer: draw the surveyed path network as faint lines so it can be
+  // eyeballed against the basemap (docs/ROADMAP.md Day 7).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded || map.getSource('network-debug')) return;
+    if (nodes.length === 0 || edges.length === 0) return;
+
+    const nodeById = new Map(nodes.map((n) => [n.id, n]));
+    const features = edges
+      .map((e) => {
+        const source = nodeById.get(e.source_node);
+        const target = nodeById.get(e.target_node);
+        if (!source || !target) return null;
+        return {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [source.lng, source.lat],
+              [target.lng, target.lat],
+            ],
+          },
+        };
+      })
+      .filter(Boolean);
+
+    map.addSource('network-debug', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features },
+    });
+
+    map.addLayer({
+      id: 'network-debug-layer',
+      type: 'line',
+      source: 'network-debug',
+      paint: {
+        'line-color': '#000000',
+        'line-width': 1.5,
+        'line-opacity': 0.25,
+      },
+    });
+  }, [mapLoaded, nodes, edges]);
 
   useEffect(() => {
     const map = mapRef.current;

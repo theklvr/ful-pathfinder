@@ -92,10 +92,10 @@ Done when: a student can find a place by its common nickname.
 ## Phase C: Routing (the core of PathFinder)
 
 ### Day 7: Load the path network
-- [ ] Write a seed script that loads `network.geojson` into `nodes` and `edges`, computing each edge `distance_m` with haversine at load time.
-- [ ] For each place, compute and store `nearest_node_id`.
-- [ ] Add a debug layer that draws the path network as faint lines so we can eyeball it.
-- [ ] Commit.
+- [x] Write a seed script that loads `network.geojson` into `nodes` and `edges`, computing each edge `distance_m` with haversine at load time (`supabase/seed/import_network.mjs`; live load done via the Supabase MCP tools, same approach as Day 4).
+- [x] For each place, compute and store `nearest_node_id`.
+- [x] Add a debug layer that draws the path network as faint lines so we can eyeball it.
+- [x] Commit.
 
 > Prompt: "Do Day 7: seed nodes and edges from network.geojson (compute edge distances via haversine), set each place's nearest_node_id, and add a faint debug layer showing the path network. If network.geojson is missing, tell me its required shape and pause."
 
