@@ -11,13 +11,8 @@ export default function PlaceCard({ place, onClose, onDirections }) {
         <span className="place-card-category">{place.category}</span>
         <h2 className="place-card-name">{place.name}</h2>
         {place.description && <p className="place-card-description">{place.description}</p>}
-        <button
-          className="place-card-directions"
-          onClick={() => onDirections?.(place)}
-          disabled
-          title="Routing lands in Day 9"
-        >
-          Directions (coming soon)
+        <button className="place-card-directions" onClick={() => onDirections?.(place)}>
+          Directions
         </button>
       </div>
     </div>

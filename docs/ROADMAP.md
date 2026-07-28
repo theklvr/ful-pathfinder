@@ -111,9 +111,9 @@ Done when: the surveyed path network is visible on the map.
 Done when: A* returns a correct shortest path in a test.
 
 ### Day 9: Directions on the map
-- [ ] Wire the Directions button: choose start (default: current place or user location) and destination, run A*, draw the route line.
-- [ ] Show total distance and estimated walking time in `DirectionsPanel`.
-- [ ] Commit.
+- [x] Wire the Directions button: choose start (default: School Gate, changeable via a dropdown — live geolocation is Day 11) and destination, run A*, draw the route line.
+- [x] Show total distance and estimated walking time in `DirectionsPanel`.
+- [x] Commit.
 
 > Prompt: "Do Day 9: connect the Directions flow end to end. Snap start and destination to nearest nodes, run A*, draw the route, and show distance and walk time. Then stop."
 

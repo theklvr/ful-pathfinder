@@ -15,7 +15,7 @@ const FELELE_CENTER = [6.68361, 7.85944];
 const FELELE_ZOOM = 15;
 const PLACE_ZOOM = 18;
 
-const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], onPlaceClick }, ref) {
+const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], route, onPlaceClick }, ref) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef(new Map());
@@ -93,6 +93,35 @@ const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], on
       },
     });
   }, [mapLoaded, nodes, edges]);
+
+  // Highlighted route line for the active Directions request (Day 9).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+
+    const data = route
+      ? { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: route } }] }
+      : { type: 'FeatureCollection', features: [] };
+
+    const source = map.getSource('route');
+    if (source) {
+      source.setData(data);
+      return;
+    }
+
+    map.addSource('route', { type: 'geojson', data });
+    map.addLayer({
+      id: 'route-layer',
+      type: 'line',
+      source: 'route',
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: {
+        'line-color': '#0891b2',
+        'line-width': 5,
+        'line-opacity': 0.9,
+      },
+    });
+  }, [mapLoaded, route]);
 
   useEffect(() => {
     const map = mapRef.current;
