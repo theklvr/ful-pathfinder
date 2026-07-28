@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
-import { Map, NavigationControl, addProtocol } from 'maplibre-gl';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { Map, NavigationControl, Marker, addProtocol } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { buildStyle } from './style';
+import { CATEGORY_COLOR, DEFAULT_MARKER_COLOR } from '../data/categories';
 
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
@@ -12,10 +13,18 @@ addProtocol('pmtiles', protocol.tile);
 // ground survey point. Correct once docs/SURVEY-GUIDE.md data comes in.
 const FELELE_CENTER = [6.68361, 7.85944];
 const FELELE_ZOOM = 15;
+const PLACE_ZOOM = 18;
 
-export default function MapView() {
+const MapView = forwardRef(function MapView({ places, onPlaceClick }, ref) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
+  const markersRef = useRef(new Map());
+
+  useImperativeHandle(ref, () => ({
+    flyTo(place) {
+      mapRef.current?.flyTo({ center: [place.lng, place.lat], zoom: PLACE_ZOOM });
+    },
+  }));
 
   useEffect(() => {
     mapRef.current = new Map({
@@ -33,5 +42,33 @@ export default function MapView() {
     };
   }, []);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const currentIds = new Set(places.map((p) => p.id));
+    for (const [id, marker] of markersRef.current) {
+      if (!currentIds.has(id)) {
+        marker.remove();
+        markersRef.current.delete(id);
+      }
+    }
+
+    for (const place of places) {
+      if (markersRef.current.has(place.id)) continue;
+      const el = document.createElement('div');
+      el.className = 'place-marker';
+      el.style.backgroundColor = CATEGORY_COLOR[place.category] ?? DEFAULT_MARKER_COLOR;
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onPlaceClick?.(place);
+      });
+      const marker = new Marker({ element: el }).setLngLat([place.lng, place.lat]).addTo(map);
+      markersRef.current.set(place.id, marker);
+    }
+  }, [places, onPlaceClick]);
+
   return <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />;
-}
+});
+
+export default MapView;

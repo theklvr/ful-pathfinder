@@ -61,9 +61,9 @@ Done when: the app can fetch places from Supabase.
 ## Phase B: Data and display
 
 ### Day 4: Import surveyed places and show them
-- [ ] Write a seed script in `supabase/seed/` that loads `places.csv` into the `places` table.
-- [ ] Render every place as a marker on the map, coloured or iconed by category.
-- [ ] Commit.
+- [x] Write a seed script in `supabase/seed/` that loads `places.csv` into the `places` table (`supabase/seed/import_places.mjs`; the actual load into the live project was run via the Supabase MCP tools).
+- [x] Render every place as a marker on the map, coloured by category (`src/data/categories.js`, wired into `src/map/MapView.jsx`).
+- [x] Commit.
 
 > Prompt: "Do Day 4: write a seed script to import places.csv into Supabase, then render all places as category-coloured markers on the map. If places.csv is missing, tell me exactly what columns it needs and pause."
 
