@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Map, NavigationControl, Marker, addProtocol } from 'maplibre-gl';
+import { Map as MaplibreMap, NavigationControl, Marker, addProtocol } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { buildStyle } from './style';
@@ -27,7 +27,7 @@ const MapView = forwardRef(function MapView({ places, onPlaceClick }, ref) {
   }));
 
   useEffect(() => {
-    mapRef.current = new Map({
+    mapRef.current = new MaplibreMap({
       container: containerRef.current,
       style: buildStyle(),
       center: FELELE_CENTER,
