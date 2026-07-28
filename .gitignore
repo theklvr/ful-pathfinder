@@ -15,6 +15,10 @@ dist-ssr
 # Environment variables
 .env
 
+# Raw survey photos (100+ MB) — too large for plain git, keep locally.
+# The survey KML itself (Assets/*.kml) is small and IS tracked.
+Assets/images/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

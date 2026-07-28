@@ -58,6 +58,8 @@ The walking-path graph as GeoJSON. Two kinds of features:
 
 You do not have to hand-write this. The normal flow is: record tracks, export them from the GPS app as GPX or GeoJSON, import into QGIS or geojson.io, snap the ends together at junctions, assign node ids, then export. If that is too fiddly, hand the raw tracks to Claude Code and ask it to help convert them into this shape.
 
+If the survey was done in Google My Maps instead, export it as KML (My Maps → the three-dot menu → Export to KML) and drop it in `Assets/`. `npm run convert-survey` (`scripts/convert-survey-kml.mjs`) reads pin descriptions for `category`/`nicknames`/`note`, and welds path lines into a shared node graph wherever their endpoints land within a few metres of each other — re-run it whenever the KML export is updated with new survey zones.
+
 Minimal example:
 
 ```json
