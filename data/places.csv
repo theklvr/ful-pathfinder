@@ -37,8 +37,8 @@ Toilet,service,Toilet;Bathroom,School Toilet behind ICT,,7.8684068,6.6869193
 FSLT 1,landmark,Fslt 1;fslt a,School Faculty of science lecture theatre,,7.868901,6.6837328
 FSLT 2,landmark,fslt 2;fslt b,School Faculty of science lecture theatre 2,,7.8689276,6.6849881
 Faculty of life science building,faculty,Science;life science,Faculty of life science building,,7.8686034,6.6837347
-Girls hostel,landmark,hostel;girls hostel,School girls hostel,,7.870091,6.6797928
-Boys hostel,landmark,hostel;boys hostel,School boys hostel,,7.8684571,6.6790525
+Girls hostel,hostel,hostel;girls hostel,School girls hostel,,7.870091,6.6797928
+Boys hostel,hostel,hostel;boys hostel,School boys hostel,,7.8684571,6.6790525
 Block G,faculty,mathematics;geology;economics,"Faculty of Mathematics, Economics & Geology",,7.8689504,6.6853728
 Block D,faculty,Zoology;microbiology,"Department of Zoology, microbiology",,7.8689185,6.6841229
 Block E,landmark,Chemistry,Department of Chemistry,,7.8689557,6.6845735

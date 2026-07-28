@@ -133,7 +133,7 @@
       </Placemark>
       <Placemark>
         <name>School Stadium</name>
-        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR44UJb3YLDU6sr8qOdMqaVCrAQ9nF7KG_iScqm0PhsPFlQrld_if-l_RoF_eUi8fpU5FWj9eagugKoYniKxgnM1inhh-rB-du6Q3gJoutZ1T-m2IEYBQaGnBljtEIzb54NkOGs2ySZKYxs5NNTBovas4yokOdx_wJEGwwETB9hI287y3S8bLU6lpQifNkYoD10wmYg7U0sW42I6KNjXSW-Tiy0aHIqqu5ZlOhQ0QeAGs7pugmKMJdHnsfg?authuser=0&fife=s16383" height="200" width="auto" /><br><br>The school stadium for sports and open events, Landmark]]></description>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR44UJb3YLDU6sr8qOdMqaVCrAQ9nF7KG_iScqm0PhsPFlQrld_if-l_RoF_eUi8fpU5FWj9eagugKoYniKxgnM1inhh-rB-du6Q3gJoutZ1T-m2IEYBQaGnBljtEIzb54NkOGs2ySZKYxs5NNTBovas4yokOdx_wJEGwwETB9hI287y3S8bLU6lpQifNkYoD10wmYg7U0sW42I6KNjXSW-Tiy0aHIqqu5ZlOhQ0QeAGs7pugmKMJdHnsfg?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>note: The school stadium for sports and open events]]></description>
         <styleUrl>#icon-1899-0288D1</styleUrl>
         <ExtendedData>
           <Data name="gx_media_links">
@@ -148,7 +148,7 @@
       </Placemark>
       <Placemark>
         <name>School Mosque</name>
-        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4muMfrsRqSFltIldtk-qaDelOOaRoqUwuasCJft1trRpH8grDtLGP1J0h6s9MAJGXeXLyFybV4-1AcetixHVRBewN9VEP4XzIAQU5XtOvnVEf8iAn0OkDUgLX8Qcbv_f95YDJRqn7QFJZb0Bl4KPzSZJSvistiBAXCpQUtYKwS_1JrgBonM9aJ7-G8jmI7LKyvcR3wanXHSjWjKLeVTtbxpSm2BP7wDsktK8EP_oPaw7vAZjur97mBC5U?authuser=0&fife=s16383" height="200" width="auto" /><br><br>The school mosque immediately after the gate, Landmark]]></description>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4muMfrsRqSFltIldtk-qaDelOOaRoqUwuasCJft1trRpH8grDtLGP1J0h6s9MAJGXeXLyFybV4-1AcetixHVRBewN9VEP4XzIAQU5XtOvnVEf8iAn0OkDUgLX8Qcbv_f95YDJRqn7QFJZb0Bl4KPzSZJSvistiBAXCpQUtYKwS_1JrgBonM9aJ7-G8jmI7LKyvcR3wanXHSjWjKLeVTtbxpSm2BP7wDsktK8EP_oPaw7vAZjur97mBC5U?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>note: The school mosque immediately after the gate]]></description>
         <styleUrl>#icon-1899-0288D1</styleUrl>
         <ExtendedData>
           <Data name="gx_media_links">
@@ -583,7 +583,7 @@
       </Placemark>
       <Placemark>
         <name>Girls hostel</name>
-        <description><![CDATA[category: landmark<br>nicknames: hostel, girls hostel<br>note: School girls hostel]]></description>
+        <description><![CDATA[category: hostel<br>nicknames: hostel, girls hostel<br>note: School girls hostel]]></description>
         <styleUrl>#icon-1899-0288D1</styleUrl>
         <Point>
           <coordinates>
@@ -593,7 +593,7 @@
       </Placemark>
       <Placemark>
         <name>Boys hostel</name>
-        <description><![CDATA[category: landmark<br>nicknames: hostel, boys hostel<br>note: School boys hostel]]></description>
+        <description><![CDATA[category: hostel<br>nicknames: hostel, boys hostel<br>note: School boys hostel]]></description>
         <styleUrl>#icon-1899-0288D1</styleUrl>
         <Point>
           <coordinates>
@@ -993,6 +993,7 @@
           <tessellate>1</tessellate>
           <coordinates>
             6.6797344,7.8677805,0
+            6.6797138,7.8689094,0
             6.6797023,7.8696672,0
           </coordinates>
         </LineString>
@@ -1049,6 +1050,7 @@
           <coordinates>
             6.686175,7.8679266,0
             6.6860856,7.8690172,0
+            6.6861058,7.8688394,0
           </coordinates>
         </LineString>
       </Placemark>
