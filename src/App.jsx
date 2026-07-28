@@ -219,7 +219,9 @@ export default function App() {
         <>
           <div className="top-overlay">
             <SearchBar places={places} onSelect={handleSelectPlace} />
-            <CategoryFilter activeCategories={activeCategories} onToggle={toggleCategory} />
+            <div className="category-filter-wrap">
+              <CategoryFilter activeCategories={activeCategories} onToggle={toggleCategory} />
+            </div>
           </div>
           {destinationPlace ? (
             <DirectionsPanel

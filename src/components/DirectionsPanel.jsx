@@ -1,4 +1,5 @@
 import { formatDistance, formatDuration } from '../routing/format';
+import { useSwipeToDismiss } from '../hooks/useSwipeToDismiss';
 
 export default function DirectionsPanel({
   places,
@@ -11,10 +12,13 @@ export default function DirectionsPanel({
   onStartNavigation,
   locationStatus,
 }) {
+  const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
+
   if (!destination) return null;
 
   return (
-    <div className="place-card directions-panel">
+    <div className="place-card directions-panel" ref={sheetRef}>
+      <div className="sheet-handle" {...handleProps} />
       <button className="place-card-close" onClick={onClose} aria-label="Close">
         ×
       </button>

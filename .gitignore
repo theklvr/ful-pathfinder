@@ -23,6 +23,9 @@ Assets/images/
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# Claude Code session state
+.claude/
 .DS_Store
 *.suo
 *.ntvs*

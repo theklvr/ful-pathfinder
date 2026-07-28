@@ -1,8 +1,13 @@
+import { useSwipeToDismiss } from '../hooks/useSwipeToDismiss';
+
 export default function PlaceCard({ place, onClose, onDirections }) {
+  const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
+
   if (!place) return null;
 
   return (
-    <div className="place-card">
+    <div className="place-card" ref={sheetRef}>
+      <div className="sheet-handle" {...handleProps} />
       <button className="place-card-close" onClick={onClose} aria-label="Close">
         ×
       </button>

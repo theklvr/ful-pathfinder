@@ -142,8 +142,8 @@ Done when: the route comes with human-readable directions.
 > Prompt: "Do Day 11: add live geolocation as a start point, with a way to manually correct the start marker for GPS drift. Then stop."
 
 ### Day 12: Mobile-first pass
-- [ ] Make the layout work well on a phone: bottom sheet for cards and directions, large tap targets, no desktop-only assumptions.
-- [ ] Commit.
+- [x] Make the layout work well on a phone: bottom sheet for cards and directions (draggable handle, swipe-down-to-dismiss via `src/hooks/useSwipeToDismiss.js`), large tap targets (44-48px: category chips, search input, close/end buttons, voice toggle), no desktop-only assumptions. Added a scroll-fade hint on the category chip row.
+- [x] Commit.
 
 > Prompt: "Do Day 12: a mobile-first responsive pass (bottom-sheet UI, large tap targets, thumb-reachable controls). Then stop."
 
