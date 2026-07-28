@@ -53,4 +53,5 @@ Three tables. Full schema and rationale are in `docs/ARCHITECTURE.md`.
 - `npm run build` — production build to `dist/`
 - `npm run preview` — serve the production build locally
 - `npm run lint` — lint with oxlint
-- (add data-seed scripts here as they are created, from Day 3 onward)
+
+Supabase project: `ful-pathfinder` (ref `qvwgeowgidwzyaztyhdu`, region `eu-west-1`, free tier), in the "theklvr's Org" organization. Schema lives in `supabase/migrations/`; seed scripts in `supabase/seed/`. Requires a local `.env` (see `.env.example`) with the project URL and anon/publishable key, not committed.

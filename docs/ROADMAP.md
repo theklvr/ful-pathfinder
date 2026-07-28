@@ -45,12 +45,12 @@ Done when: `npm run dev` shows a blank interactive map.
 Done when: the base map shows real Lokoja geography with no API key.
 
 ### Day 3: Supabase schema
-- [ ] Create the Supabase project (I will do the signup and paste you the URL and anon key).
-- [ ] Enable PostGIS and create `places`, `nodes`, `edges` per `docs/ARCHITECTURE.md`, as a migration in `supabase/migrations/`.
-- [ ] Turn on RLS with public read-only policies on the three tables.
-- [ ] Add the supabase client in `src/lib/supabase.js`, reading keys from env.
-- [ ] Seed 3 to 5 real places by hand so the next day has something to show.
-- [ ] Commit.
+- [x] Create the Supabase project (created via the Supabase MCP tools instead of manual signup — see PROGRESS.md).
+- [x] Enable PostGIS and create `places`, `nodes`, `edges` per `docs/ARCHITECTURE.md`, as a migration in `supabase/migrations/`.
+- [x] Turn on RLS with public read-only policies on the three tables.
+- [x] Add the supabase client in `src/lib/supabase.js`, reading keys from env.
+- [x] Seed 3 placeholder places (not real survey data yet — see supabase/seed/seed_placeholder_places.sql).
+- [x] Commit.
 
 > Prompt: "Do Day 3: create the SQL migration for places, nodes, edges from docs/ARCHITECTURE.md, add RLS read policies, wire the Supabase client, and seed a few test places. I will create the Supabase project and give you the URL and anon key. Then stop."
 
