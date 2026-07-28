@@ -120,9 +120,9 @@ Done when: A* returns a correct shortest path in a test.
 Done when: picking two places draws a real walking route with distance and time.
 
 ### Day 10: Turn-by-turn steps
-- [ ] Generate a readable step list from the node path, naming nearby landmarks.
-- [ ] Show it in `DirectionsPanel`.
-- [ ] Commit.
+- [x] Generate a readable step list from the node path, naming nearby landmarks (`src/routing/steps.js`).
+- [x] Show it in `DirectionsPanel`.
+- [x] Commit.
 
 > Prompt: "Do Day 10: turn the routed node path into readable turn-by-turn steps that reference nearby places, shown in the directions panel. Then stop."
 

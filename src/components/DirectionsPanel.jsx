@@ -8,7 +8,7 @@ function formatDuration(m) {
   return minutes < 1 ? '<1 min walk' : `${minutes} min walk`;
 }
 
-export default function DirectionsPanel({ places, origin, destination, onChangeOrigin, onClose, route }) {
+export default function DirectionsPanel({ places, origin, destination, onChangeOrigin, onClose, route, steps = [] }) {
   if (!destination) return null;
 
   return (
@@ -37,10 +37,17 @@ export default function DirectionsPanel({ places, origin, destination, onChangeO
         </div>
 
         {route ? (
-          <div className="directions-summary">
-            <span>{formatDistance(route.distanceM)}</span>
-            <span>{formatDuration(route.distanceM)}</span>
-          </div>
+          <>
+            <div className="directions-summary">
+              <span>{formatDistance(route.distanceM)}</span>
+              <span>{formatDuration(route.distanceM)}</span>
+            </div>
+            <ol className="directions-steps">
+              {steps.map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
+            </ol>
+          </>
         ) : (
           <div className="directions-summary directions-summary-empty">
             {origin ? 'No walking route found between these places.' : 'Pick a starting point.'}

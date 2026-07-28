@@ -10,6 +10,7 @@ import { CATEGORIES } from './data/categories';
 import { buildGraph } from './routing/graph';
 import { astar, haversineHeuristic } from './routing/astar';
 import { haversine } from './routing/haversine';
+import { buildSteps } from './routing/steps';
 
 const DEFAULT_ORIGIN_NAME = 'School Gate';
 
@@ -64,6 +65,11 @@ export default function App() {
     return { path, distanceM, coordinates };
   }, [routingGraph, originPlace, destinationPlace]);
 
+  const steps = useMemo(() => {
+    if (!route || !routingGraph || !originPlace || !destinationPlace) return [];
+    return buildSteps(route.path, routingGraph.coords, originPlace, destinationPlace, places);
+  }, [route, routingGraph, originPlace, destinationPlace, places]);
+
   function toggleCategory(id) {
     setActiveCategories((prev) => {
       const next = new Set(prev);
@@ -107,6 +113,7 @@ export default function App() {
           onChangeOrigin={setOriginPlace}
           onClose={() => setDestinationPlace(null)}
           route={route}
+          steps={steps}
         />
       ) : (
         <PlaceCard place={selectedPlace} onClose={() => setSelectedPlace(null)} onDirections={handleStartDirections} />
