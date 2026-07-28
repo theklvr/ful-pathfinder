@@ -14,11 +14,16 @@ addProtocol('pmtiles', protocol.tile);
 const FELELE_CENTER = [6.68361, 7.85944];
 const FELELE_ZOOM = 15;
 const PLACE_ZOOM = 18;
+const NAV_ZOOM = 18.5;
 
-const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], route, onPlaceClick }, ref) {
+const MapView = forwardRef(function MapView(
+  { places, nodes = [], edges = [], route, userPosition, navigating = false, onPlaceClick, onUserPositionDrag },
+  ref,
+) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef(new Map());
+  const userMarkerRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -51,7 +56,8 @@ const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], ro
   }, []);
 
   // Debug layer: draw the surveyed path network as faint lines so it can be
-  // eyeballed against the basemap (docs/ROADMAP.md Day 7).
+  // eyeballed against the basemap (docs/ROADMAP.md Day 7). Hidden while
+  // actively navigating to cut visual clutter, like a real nav app does.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapLoaded || map.getSource('network-debug')) return;
@@ -87,12 +93,18 @@ const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], ro
       type: 'line',
       source: 'network-debug',
       paint: {
-        'line-color': '#000000',
+        'line-color': '#0B2545',
         'line-width': 1.5,
-        'line-opacity': 0.25,
+        'line-opacity': 0.2,
       },
     });
   }, [mapLoaded, nodes, edges]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded || !map.getLayer('network-debug-layer')) return;
+    map.setLayoutProperty('network-debug-layer', 'visibility', navigating ? 'none' : 'visible');
+  }, [mapLoaded, navigating]);
 
   // Highlighted route line for the active Directions request (Day 9).
   useEffect(() => {
@@ -116,9 +128,9 @@ const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], ro
       source: 'route',
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#0891b2',
-        'line-width': 5,
-        'line-opacity': 0.9,
+        'line-color': '#4FA8E0',
+        'line-width': 6,
+        'line-opacity': 0.95,
       },
     });
   }, [mapLoaded, route]);
@@ -148,6 +160,46 @@ const MapView = forwardRef(function MapView({ places, nodes = [], edges = [], ro
       markersRef.current.set(place.id, marker);
     }
   }, [places, onPlaceClick]);
+
+  // "You are here" puck: draggable so a walker can correct GPS drift
+  // (consumer phone GPS is only accurate to ~5-15m — docs/ARCHITECTURE.md).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    if (!userPosition) {
+      userMarkerRef.current?.remove();
+      userMarkerRef.current = null;
+      return;
+    }
+
+    if (!userMarkerRef.current) {
+      const el = document.createElement('div');
+      el.className = 'user-puck';
+      el.innerHTML = '<div class="user-puck-cone"></div><div class="user-puck-dot"></div>';
+      const marker = new Marker({ element: el, draggable: true, anchor: 'center' })
+        .setLngLat([userPosition.lng, userPosition.lat])
+        .addTo(map);
+      marker.on('dragend', () => {
+        const { lng, lat } = marker.getLngLat();
+        onUserPositionDrag?.(lat, lng);
+      });
+      userMarkerRef.current = marker;
+    } else {
+      userMarkerRef.current.setLngLat([userPosition.lng, userPosition.lat]);
+    }
+
+    const cone = userMarkerRef.current.getElement().querySelector('.user-puck-cone');
+    if (cone) cone.style.display = userPosition.heading != null ? 'block' : 'none';
+    if (cone && userPosition.heading != null) cone.style.transform = `rotate(${userPosition.heading}deg)`;
+  }, [userPosition, onUserPositionDrag]);
+
+  // Camera follows the walker while navigating, like a real turn-by-turn app.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !navigating || !userPosition) return;
+    map.easeTo({ center: [userPosition.lng, userPosition.lat], zoom: Math.max(map.getZoom(), NAV_ZOOM), duration: 800 });
+  }, [navigating, userPosition]);
 
   return <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />;
 });

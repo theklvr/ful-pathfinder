@@ -1,3 +1,19 @@
+import { haversine } from './haversine.js';
+
+// Snaps an arbitrary point (e.g. a live GPS fix) to the closest graph node.
+export function nearestNodeId(point, coords) {
+  let bestId = null;
+  let bestDist = Infinity;
+  for (const [id, coord] of coords) {
+    const d = haversine(point, coord);
+    if (d < bestDist) {
+      bestDist = d;
+      bestId = id;
+    }
+  }
+  return bestId;
+}
+
 // Builds an adjacency list from nodes + edges as fetched from Supabase.
 // graph: Map<nodeId, Array<{ to, weight }>>
 // coords: Map<nodeId, { lat, lng }>

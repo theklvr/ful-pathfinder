@@ -1,14 +1,16 @@
-function formatDistance(m) {
-  return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : `${Math.round(m)} m`;
-}
+import { formatDistance, formatDuration } from '../routing/format';
 
-// Matches the ~1.3 m/s average walking pace from docs/ARCHITECTURE.md.
-function formatDuration(m) {
-  const minutes = Math.round(m / 1.3 / 60);
-  return minutes < 1 ? '<1 min walk' : `${minutes} min walk`;
-}
-
-export default function DirectionsPanel({ places, origin, destination, onChangeOrigin, onClose, route, steps = [] }) {
+export default function DirectionsPanel({
+  places,
+  origin,
+  destination,
+  onChangeOrigin,
+  onClose,
+  route,
+  steps = [],
+  onStartNavigation,
+  locationStatus,
+}) {
   if (!destination) return null;
 
   return (
@@ -40,11 +42,24 @@ export default function DirectionsPanel({ places, origin, destination, onChangeO
           <>
             <div className="directions-summary">
               <span>{formatDistance(route.distanceM)}</span>
-              <span>{formatDuration(route.distanceM)}</span>
+              <span>{formatDuration(route.distanceM)} walk</span>
             </div>
+
+            <button className="directions-start-nav" onClick={onStartNavigation}>
+              {locationStatus === 'denied' ? 'Enable location to navigate' : 'Start navigation'}
+            </button>
+            {locationStatus === 'denied' && (
+              <p className="directions-location-hint">
+                Location access was denied. Allow it in your browser's site settings to get turn-by-turn guidance
+                from where you're standing.
+              </p>
+            )}
+
             <ol className="directions-steps">
               {steps.map((step, i) => (
-                <li key={i}>{step}</li>
+                <li key={i} data-kind={step.kind}>
+                  {step.text}
+                </li>
               ))}
             </ol>
           </>

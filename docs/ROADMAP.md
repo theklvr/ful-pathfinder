@@ -132,10 +132,12 @@ Done when: the route comes with human-readable directions.
 
 ## Phase D: Location and polish
 
-### Day 11: You are here
-- [ ] Use the browser Geolocation API to show the user's position and let them route from it.
-- [ ] Let the user drag or re-pick their start point to correct GPS drift.
-- [ ] Commit.
+### Day 11: You are here (expanded into full live navigation, at user's request)
+- [x] Use the browser Geolocation API to show the user's position and let them route from it (`src/location/useLiveLocation.js`, `watchPosition`).
+- [x] Let the user drag or re-pick their start point to correct GPS drift (draggable puck marker).
+- [x] Beyond the original spec: a real live "Start navigation" mode — top instruction banner (AMAP/Google-Maps style) that auto-recomputes the route from the walker's live position on every GPS update, counts down distance to the next turn, speaks each instruction via the Web Speech API (mute toggle), follows the walker with the camera, and detects arrival. See `src/components/NavBanner.jsx`, `NavBottomBar.jsx`, and the nav state machine in `App.jsx`.
+- [x] Visual redesign grounded in Federal University Lokoja's own crest colours (Navy Blue / Sky Blue) plus a deliberate amber accent, rather than generic UI-kit teal.
+- [x] Commit.
 
 > Prompt: "Do Day 11: add live geolocation as a start point, with a way to manually correct the start marker for GPS drift. Then stop."
 

@@ -20,6 +20,13 @@ function turnLabel(deltaDeg) {
   return 'Continue straight';
 }
 
+// 'right' | 'left' | 'straight' | 'arrive' — used to pick a direction icon.
+function turnKind(deltaDeg) {
+  if (deltaDeg > TURN_THRESHOLD_DEG) return 'right';
+  if (deltaDeg < -TURN_THRESHOLD_DEG) return 'left';
+  return 'straight';
+}
+
 function formatDistance(m) {
   return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : `${Math.round(m)} m`;
 }
@@ -39,13 +46,17 @@ function nearestLandmark(point, places, excludeIds) {
 }
 
 // path: array of node ids from astar(). coords: Map<nodeId, { lat, lng }>.
-// origin/destination: place rows, used to name the first/last step.
-// places: all places, used to call out nearby landmarks along turns.
+// origin/destination: place-shaped rows ({ id, name }), used to name the
+// first/last step. places: all places, used to call out nearby landmarks.
+//
+// Each returned step is { text, kind, at } — `at` is the coordinate the
+// instruction becomes relevant at (the turn node, or the destination for
+// the final step), used by live navigation to count down distance to it.
 export function buildSteps(path, coords, origin, destination, places) {
   if (!path || path.length < 2) return [];
 
   const usedPlaceIds = new Set([origin.id, destination.id]);
-  const steps = [`Head out from ${origin.name}.`];
+  const steps = [{ text: `Head out from ${origin.name}.`, kind: 'start', at: coords.get(path[0]) }];
 
   let legStart = 0;
   let legBearing = bearing(coords.get(path[0]), coords.get(path[1]));
@@ -64,13 +75,25 @@ export function buildSteps(path, coords, origin, destination, places) {
       if (landmark) usedPlaceIds.add(landmark.id);
       const landmarkText = landmark ? `, past ${landmark.name}` : '';
 
-      steps.push(`${turnLabel(delta)} after ${formatDistance(legDistance)}${landmarkText}.`);
+      steps.push({
+        text: `${turnLabel(delta)} after ${formatDistance(legDistance)}${landmarkText}.`,
+        kind: turnKind(delta),
+        at: coords.get(path[i]),
+      });
 
       legStart = i;
       legBearing = nextBearing;
     }
   }
 
-  steps.push(`Arrive at ${destination.name}.`);
+  steps.push({ text: `Arrive at ${destination.name}.`, kind: 'arrive', at: coords.get(path[path.length - 1]) });
   return steps;
+}
+
+// Picks the single most relevant instruction for a live nav banner. Since
+// live navigation recomputes the whole route fresh from the walker's
+// current position on every GPS update, steps[0] is always the redundant
+// "head out from here" line — the walker wants to know what's next.
+export function currentLiveStep(steps) {
+  return steps[1] ?? steps[0] ?? null;
 }
