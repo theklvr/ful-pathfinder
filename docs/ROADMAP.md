@@ -70,9 +70,9 @@ Done when: the app can fetch places from Supabase.
 Done when: surveyed places appear on the map by category.
 
 ### Day 5: Place detail and category filter
-- [ ] Clicking a marker opens `PlaceCard`: name, photo, description, and a Directions button.
-- [ ] Add `CategoryFilter` to toggle categories on and off.
-- [ ] Commit.
+- [x] Clicking a marker opens `PlaceCard`: name, photo, description, and a Directions button (disabled for now — routing is Day 9).
+- [x] Add `CategoryFilter` to toggle categories on and off.
+- [x] Commit.
 
 > Prompt: "Do Day 5: build the PlaceCard on marker click (name, photo, description, Directions button) and a category filter toggle. Then stop."
 
