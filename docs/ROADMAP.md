@@ -79,9 +79,9 @@ Done when: surveyed places appear on the map by category.
 Done when: tapping a place shows its details and filtering works.
 
 ### Day 6: Search
-- [ ] Build `SearchBar` that searches `places` by name and by `aliases` (so "SUB" finds Student Union Building).
-- [ ] Selecting a result flies the map to that place and opens its card.
-- [ ] Commit.
+- [x] Build `SearchBar` that searches `places` by name and by `aliases`.
+- [x] Selecting a result flies the map to that place and opens its card.
+- [x] Commit.
 
 > Prompt: "Do Day 6: build search over place name and aliases, and fly to the selected result. Then stop."
 

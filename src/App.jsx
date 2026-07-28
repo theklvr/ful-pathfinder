@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import MapView from './map/MapView';
 import PlaceCard from './components/PlaceCard';
 import CategoryFilter from './components/CategoryFilter';
+import SearchBar from './components/SearchBar';
 import { fetchPlaces } from './data/places';
 import { CATEGORIES } from './data/categories';
 
@@ -9,6 +10,7 @@ export default function App() {
   const [places, setPlaces] = useState([]);
   const [activeCategories, setActiveCategories] = useState(() => new Set(CATEGORIES.map((c) => c.id)));
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const mapRef = useRef(null);
 
   useEffect(() => {
     fetchPlaces().then(setPlaces).catch(console.error);
@@ -28,10 +30,18 @@ export default function App() {
     });
   }
 
+  function handleSelectPlace(place) {
+    setSelectedPlace(place);
+    mapRef.current?.flyTo(place);
+  }
+
   return (
     <>
-      <MapView places={filteredPlaces} onPlaceClick={setSelectedPlace} />
-      <CategoryFilter activeCategories={activeCategories} onToggle={toggleCategory} />
+      <MapView ref={mapRef} places={filteredPlaces} onPlaceClick={setSelectedPlace} />
+      <div className="top-overlay">
+        <SearchBar places={places} onSelect={handleSelectPlace} />
+        <CategoryFilter activeCategories={activeCategories} onToggle={toggleCategory} />
+      </div>
       <PlaceCard place={selectedPlace} onClose={() => setSelectedPlace(null)} />
     </>
   );
