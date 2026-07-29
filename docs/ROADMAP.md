@@ -155,9 +155,9 @@ Done when: the route comes with human-readable directions.
 > Prompt: "Do Day 13: add offline caching via a service worker for the map and place data, plus loading and error states. Then stop."
 
 ### Day 14: Deploy
-- [ ] Deploy the frontend to Vercel and connect the Supabase env vars.
-- [ ] Confirm the deployed app works on real phones on campus.
-- [ ] Commit.
+- [x] Deploy the frontend to Vercel and connect the Supabase env vars. Live at https://ful-pathfinder-klvr.vercel.app — **but see PROGRESS.md: Vercel's Deployment Protection (SSO) is currently ON, blocking every visitor without a KLVR Vercel login. Must be turned off (Project Settings → Deployment Protection) before any student can actually open the link.**
+- [ ] Confirm the deployed app works on real phones on campus. Verified functionally correct via automated testing (search, directions, live nav, offline caching all work on the live URL) — real on-campus GPS/network testing on an actual phone is still outstanding.
+- [x] Commit.
 
 > Prompt: "Do Day 14: prepare and guide me through deploying to Vercel with Supabase env vars. Give me a checklist to test on my phone on campus. Then stop."
 
