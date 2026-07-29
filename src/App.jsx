@@ -6,6 +6,8 @@ import SearchBar from './components/SearchBar';
 import DirectionsPanel from './components/DirectionsPanel';
 import NavBanner from './components/NavBanner';
 import NavBottomBar from './components/NavBottomBar';
+import LoadingScreen from './components/LoadingScreen';
+import ErrorBanner from './components/ErrorBanner';
 import { fetchPlaces } from './data/places';
 import { fetchNodes, fetchEdges } from './data/network';
 import { CATEGORIES } from './data/categories';
@@ -44,16 +46,36 @@ export default function App() {
   const [navigating, setNavigating] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [arrived, setArrived] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [dataError, setDataError] = useState(null);
   const mapRef = useRef(null);
   const lastSpokenRef = useRef('');
   const arrivalTimerRef = useRef(null);
 
   const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(navigating);
 
+  function loadData() {
+    setDataLoading(true);
+    setDataError(null);
+    // A weak campus network more often means a request hangs than one that
+    // fails outright — without this, a hung fetch would leave the loading
+    // screen up forever with no way for the walker to retry.
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timed out')), 15000));
+    Promise.race([Promise.all([fetchPlaces(), fetchNodes(), fetchEdges()]), timeout])
+      .then(([placesData, nodesData, edgesData]) => {
+        setPlaces(placesData);
+        setNodes(nodesData);
+        setEdges(edgesData);
+      })
+      .catch((err) => {
+        console.error(err);
+        setDataError('Could not load campus data. Check your connection and try again.');
+      })
+      .finally(() => setDataLoading(false));
+  }
+
   useEffect(() => {
-    fetchPlaces().then(setPlaces).catch(console.error);
-    fetchNodes().then(setNodes).catch(console.error);
-    fetchEdges().then(setEdges).catch(console.error);
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -198,6 +220,8 @@ export default function App() {
         onUserPositionDrag={overridePosition}
       />
 
+      {dataLoading && places.length === 0 && !dataError && <LoadingScreen />}
+
       {navigating ? (
         <>
           <NavBanner
@@ -218,6 +242,7 @@ export default function App() {
       ) : (
         <>
           <div className="top-overlay">
+            {dataError && <ErrorBanner message={dataError} onRetry={loadData} />}
             <SearchBar places={places} onSelect={handleSelectPlace} />
             <div className="category-filter-wrap">
               <CategoryFilter activeCategories={activeCategories} onToggle={toggleCategory} />

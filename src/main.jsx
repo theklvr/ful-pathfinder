@@ -33,3 +33,11 @@ createRoot(document.getElementById('root')).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+
+// Only in production builds — a service worker caching the dev server's
+// ever-changing module URLs would make local development confusing.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => console.error('Service worker registration failed:', err));
+  });
+}

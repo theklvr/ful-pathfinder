@@ -148,9 +148,9 @@ Done when: the route comes with human-readable directions.
 > Prompt: "Do Day 12: a mobile-first responsive pass (bottom-sheet UI, large tap targets, thumb-reachable controls). Then stop."
 
 ### Day 13: Offline and resilience
-- [ ] Add a service worker to cache the pmtiles file and place data so the map works on weak campus network.
-- [ ] Add loading states and error handling for failed fetches.
-- [ ] Commit.
+- [x] Add a service worker to cache the pmtiles file and place data so the map works on weak campus network (`public/sw.js`, hand-rolled: manual byte-range slicing for the pmtiles file, network-first for Supabase, stale-while-revalidate for the app shell).
+- [x] Add loading states and error handling for failed fetches (`LoadingScreen`, `ErrorBanner` with Retry, and a 15s client-side timeout so a hung request degrades to a retryable error instead of an infinite spinner).
+- [x] Commit.
 
 > Prompt: "Do Day 13: add offline caching via a service worker for the map and place data, plus loading and error states. Then stop."
 
