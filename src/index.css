@@ -1,0 +1,570 @@
+/* Palette grounded in Federal University Lokoja's own crest: Navy Blue and
+   Sky Blue (confidence/authority, trust/transparency). Confluence amber is
+   the one deliberate departure — the laterite footpaths this app routes
+   over, at the literal river confluence the crest depicts. */
+:root {
+  --navy: #0b2545;
+  --sky: #4fa8e0;
+  --confluence: #f2a93b;
+  --paper: #f7f9fc;
+  --ink: #10182b;
+  --mist: #c9d6e4;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.place-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.top-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-filter-wrap {
+  position: relative;
+}
+
+.category-filter-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(to right, transparent, rgba(247, 249, 252, 0.9));
+  pointer-events: none;
+}
+
+.category-filter {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-chip {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--chip-color, var(--mist));
+  background: white;
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.category-chip[data-active='true'] {
+  background: var(--chip-color, var(--navy));
+  color: white;
+}
+
+.place-card {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.22);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.sheet-handle {
+  width: 100%;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sheet-handle::before {
+  content: '';
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--mist);
+}
+
+.place-card-photo {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.place-card-body {
+  padding: 16px;
+}
+
+.place-card-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(11, 37, 69, 0.08);
+  color: var(--navy);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.place-card-category {
+  display: inline-block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sky);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.place-card-name {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: var(--navy);
+}
+
+.place-card-description {
+  margin: 0 0 16px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.place-card-directions {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--navy);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-bar {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.18);
+  font-size: 15px;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.22);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.search-results li + li {
+  border-top: 1px solid #f1f5f9;
+}
+
+.search-results button {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.search-results button:hover {
+  background: #f1f5f9;
+}
+
+.search-result-category {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.directions-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sky);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.directions-select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--mist);
+  font-size: 14px;
+  font-family: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ink);
+  font-weight: normal;
+}
+
+.directions-to {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: var(--navy);
+}
+
+.directions-summary {
+  display: flex;
+  gap: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+.directions-summary-empty {
+  color: #64748b;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.directions-start-nav {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 8px;
+  border: none;
+  background: var(--confluence);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.directions-location-hint {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.directions-panel {
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.directions-panel .place-card-body {
+  overflow-y: auto;
+}
+
+.directions-steps {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.directions-steps li[data-kind='arrive'] {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+/* Live navigation: top instruction banner, AMAP/Google-Maps style — the
+   next instruction belongs at the top, near the eyes, not the thumbs. */
+.nav-banner {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--navy);
+  color: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.35);
+}
+
+.nav-banner-status {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.nav-banner-icon {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sky);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+}
+
+.nav-banner-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.nav-banner-distance {
+  font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Consolas, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-banner-text {
+  font-size: 14px;
+  opacity: 0.9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-banner-voice {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.nav-bottom-bar {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: white;
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.22);
+}
+
+.nav-bottom-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.nav-bottom-eta {
+  font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Consolas, monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nav-bottom-detail {
+  font-size: 13px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-bottom-end {
+  flex: 0 0 auto;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #fde8e8;
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* "You are here" puck: a compact echo of the crest's concentric shields —
+   navy ring, sky heading cone, amber centre. Draggable to correct drift. */
+.user-puck {
+  width: 26px;
+  height: 26px;
+  cursor: grab;
+}
+
+.user-puck-dot {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--sky);
+  border: 3px solid white;
+  box-shadow: 0 0 0 4px rgba(79, 168, 224, 0.35);
+  animation: user-puck-pulse 2.2s ease-in-out infinite;
+}
+
+.user-puck-cone {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 20px solid rgba(79, 168, 224, 0.55);
+  transform-origin: 50% 22px;
+  margin-left: -9px;
+  display: none;
+}
+
+@keyframes user-puck-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(79, 168, 224, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(79, 168, 224, 0.15);
+  }
+}
+
+.loading-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: var(--navy);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 15px;
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: var(--sky);
+  animation: loading-spin 0.9s linear infinite;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fde8e8;
+  color: #7a271a;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  box-shadow: 0 4px 16px rgba(11, 37, 69, 0.2);
+}
+
+.error-banner button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #b42318;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}

@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>FUL PathFinder Survey</name>
+    <description/>
+    <Style id="icon-1899-0288D1-normal">
+      <IconStyle>
+        <color>ffd18802</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1899-0288D1-highlight">
+      <IconStyle>
+        <color>ffd18802</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1899-0288D1">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-0288D1-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-0288D1-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-000000-1200-normal">
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1.2</width>
+      </LineStyle>
+    </Style>
+    <Style id="line-000000-1200-highlight">
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1.8</width>
+      </LineStyle>
+    </Style>
+    <StyleMap id="line-000000-1200">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-000000-1200-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-000000-1200-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-000000-1200-nodesc-normal">
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1.2</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-000000-1200-nodesc-highlight">
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1.8</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-000000-1200-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-000000-1200-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-000000-1200-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name>Places</name>
+      <Placemark>
+        <name>School Gate</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5aG3LCc5lkDKYHh-WsfG31igdHzu2qP4NVG4uJto26SwiO6NXMGgI8Hh6KoYsxpp28NqLoihHKau4DzvBCUDb85X8M8VUmGeGZ7p9qysDpaOUG7n58NYnvmeEViyXlfozEeFbbfkRvv2M9yFgw6-2U_ddXkI8F1X6U0xYv1G4RjzsZ1eXJysdUas3lZ3_gOtXjqtjJ2iIZWDmBHQXKCKFdd6KtF1aVpHOSjrGywufFoerRmZdYW1-WLM0?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>nicknames: Main Gate, Entrance<br>note: Felele campus main entrance]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5aG3LCc5lkDKYHh-WsfG31igdHzu2qP4NVG4uJto26SwiO6NXMGgI8Hh6KoYsxpp28NqLoihHKau4DzvBCUDb85X8M8VUmGeGZ7p9qysDpaOUG7n58NYnvmeEViyXlfozEeFbbfkRvv2M9yFgw6-2U_ddXkI8F1X6U0xYv1G4RjzsZ1eXJysdUas3lZ3_gOtXjqtjJ2iIZWDmBHQXKCKFdd6KtF1aVpHOSjrGywufFoerRmZdYW1-WLM0?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6841912,7.853434,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Police Station</name>
+        <description><![CDATA[category: service<br>nicknames: Police, station<br>note: Campus Police Station]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6838488,7.85225,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tennis Court</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7lOMvK6MmMK_VOcgEa9NG9_9Gfh3DnEBYyd0YdBqtOTtJWoPp-jx4bz3m_UQuWfJvo7yQb28K2l5fKftpkQ0b1qCpXnAqhyU21hzSNGsVM6sARx71jB9LEE2iBd2wN0H12b3ERAjGOn9CPCrLV2983P2jqI_Rmy8GWaGivoxVDiKLWcaruhTmeOcb49r8WJD6JoEP4p-6wsHW7g9BhcyxyW5Ha4s6OTkaTf07uRpFV7s3lDbod0QrP1WA?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: sport<br>nicknames: Volleyball Court, Tennis Court<br>note: School volleyball and tennis court]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7lOMvK6MmMK_VOcgEa9NG9_9Gfh3DnEBYyd0YdBqtOTtJWoPp-jx4bz3m_UQuWfJvo7yQb28K2l5fKftpkQ0b1qCpXnAqhyU21hzSNGsVM6sARx71jB9LEE2iBd2wN0H12b3ERAjGOn9CPCrLV2983P2jqI_Rmy8GWaGivoxVDiKLWcaruhTmeOcb49r8WJD6JoEP4p-6wsHW7g9BhcyxyW5Ha4s6OTkaTf07uRpFV7s3lDbod0QrP1WA?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6835864,7.8559089,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>School Stadium</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR44UJb3YLDU6sr8qOdMqaVCrAQ9nF7KG_iScqm0PhsPFlQrld_if-l_RoF_eUi8fpU5FWj9eagugKoYniKxgnM1inhh-rB-du6Q3gJoutZ1T-m2IEYBQaGnBljtEIzb54NkOGs2ySZKYxs5NNTBovas4yokOdx_wJEGwwETB9hI287y3S8bLU6lpQifNkYoD10wmYg7U0sW42I6KNjXSW-Tiy0aHIqqu5ZlOhQ0QeAGs7pugmKMJdHnsfg?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>note: The school stadium for sports and open events]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR44UJb3YLDU6sr8qOdMqaVCrAQ9nF7KG_iScqm0PhsPFlQrld_if-l_RoF_eUi8fpU5FWj9eagugKoYniKxgnM1inhh-rB-du6Q3gJoutZ1T-m2IEYBQaGnBljtEIzb54NkOGs2ySZKYxs5NNTBovas4yokOdx_wJEGwwETB9hI287y3S8bLU6lpQifNkYoD10wmYg7U0sW42I6KNjXSW-Tiy0aHIqqu5ZlOhQ0QeAGs7pugmKMJdHnsfg?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6852356,7.8564092,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>School Mosque</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4muMfrsRqSFltIldtk-qaDelOOaRoqUwuasCJft1trRpH8grDtLGP1J0h6s9MAJGXeXLyFybV4-1AcetixHVRBewN9VEP4XzIAQU5XtOvnVEf8iAn0OkDUgLX8Qcbv_f95YDJRqn7QFJZb0Bl4KPzSZJSvistiBAXCpQUtYKwS_1JrgBonM9aJ7-G8jmI7LKyvcR3wanXHSjWjKLeVTtbxpSm2BP7wDsktK8EP_oPaw7vAZjur97mBC5U?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>note: The school mosque immediately after the gate]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4muMfrsRqSFltIldtk-qaDelOOaRoqUwuasCJft1trRpH8grDtLGP1J0h6s9MAJGXeXLyFybV4-1AcetixHVRBewN9VEP4XzIAQU5XtOvnVEf8iAn0OkDUgLX8Qcbv_f95YDJRqn7QFJZb0Bl4KPzSZJSvistiBAXCpQUtYKwS_1JrgBonM9aJ7-G8jmI7LKyvcR3wanXHSjWjKLeVTtbxpSm2BP7wDsktK8EP_oPaw7vAZjur97mBC5U?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6832515,7.8542244,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name/>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4u4lotYjQpPKDPYP6K99Svqm9oZyFzMn22EVdPa2L_0Hm1lwkBESqbpc5opmsvvpNhqZGgEcO6Jk13L5J-ccDZWULiTHFZHvzvrtOB602Txe_LMPX9g-AG5vSTYqV6UKsLcNGh61LwD2pRhRZ_AqHq7D63QizjJ89Gze3gTSP5AHEwWXmmwkcQHP42y4hW3J-I5i2BiurYw3ar4oec12o-GakDqHOsY4efvW8ZBNVQ_Tyj6Z8_MIXXluU?authuser=0&fife=s16383" height="200" width="auto" /><br><br>]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4u4lotYjQpPKDPYP6K99Svqm9oZyFzMn22EVdPa2L_0Hm1lwkBESqbpc5opmsvvpNhqZGgEcO6Jk13L5J-ccDZWULiTHFZHvzvrtOB602Txe_LMPX9g-AG5vSTYqV6UKsLcNGh61LwD2pRhRZ_AqHq7D63QizjJ89Gze3gTSP5AHEwWXmmwkcQHP42y4hW3J-I5i2BiurYw3ar4oec12o-GakDqHOsY4efvW8ZBNVQ_Tyj6Z8_MIXXluU?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6832125,7.8584736,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Art</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6yyoyKDhvaW-j7LK5tAE0tGMUOAVbAKRy-4AfcUBy2AqURvHHtwuyX7ZH4z0fLk883idyL5Fkb6aLBPFI-rN95TsswYrvh3h8DW5QbtWYTdF6NhJB0aW2d3OhVraOWqrlr_Hke-KZD0rURnfBOBVw2vEWWpcwirwgqfHqO9hwZesM5oSbwOTWlrOf5F4H1Gb5OLoXygjIc2rOeVT7Jn-Fwf3_AcObT-xVBBRUmilTyjs9uHD2C6IonePw?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: Art, Faculty of art<br>note: Art building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6yyoyKDhvaW-j7LK5tAE0tGMUOAVbAKRy-4AfcUBy2AqURvHHtwuyX7ZH4z0fLk883idyL5Fkb6aLBPFI-rN95TsswYrvh3h8DW5QbtWYTdF6NhJB0aW2d3OhVraOWqrlr_Hke-KZD0rURnfBOBVw2vEWWpcwirwgqfHqO9hwZesM5oSbwOTWlrOf5F4H1Gb5OLoXygjIc2rOeVT7Jn-Fwf3_AcObT-xVBBRUmilTyjs9uHD2C6IonePw?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6831214,7.8595991,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Clinic</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5_g1rwy4MhMcBgnapo_IOWKafDEra5GrLilYFimx8a6GIptAMF_0MlPIeJvToE-YwRjDMsvx4UGUuM0lEBfFaLQDul1iEQhqltZ8dFdiGBv5PkyLFmy8RgDkiJ23iJz0yp_cqeRIYYftv3n1DSUT8KsGVdUQHK96WqLd2IfS6c9f8CiB5KuN9BqmFtrgdw8RZku78ZtR7as3k8wxEtTF2ECKUr7lguN8cqSyt5PxDs7c8C855B6z5Kgi8?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: health<br>nicknames: School clinic, clinic<br>note: School clinic and hospital]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5_g1rwy4MhMcBgnapo_IOWKafDEra5GrLilYFimx8a6GIptAMF_0MlPIeJvToE-YwRjDMsvx4UGUuM0lEBfFaLQDul1iEQhqltZ8dFdiGBv5PkyLFmy8RgDkiJ23iJz0yp_cqeRIYYftv3n1DSUT8KsGVdUQHK96WqLd2IfS6c9f8CiB5KuN9BqmFtrgdw8RZku78ZtR7as3k8wxEtTF2ECKUr7lguN8cqSyt5PxDs7c8C855B6z5Kgi8?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6833161,7.8576794,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St Francisca Hall</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7ZNfanxqwjuy6F3i0pmqzDZkwiw6DLcTWkQYXex9TJvtA-q1UCEX_grGBX2lQPLHsJdXHo4272LTLdrO-CwKG9i_XuPT2oLdyIUmd8FjCOCrAXezDDQEl0-VK_VLxF7dV6qQiLxBQZnJY9as0fzNZiH_6zVodnF4LcQcsUWhT5rti4oq7zaVKFkP3wFp461DFDZo0loka9fmciXZJjqU7HM6PEGBJvZc7_odEfz1MkU4uXthb5qRzIy9o?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: service<br>nicknames: Church, chapel<br>note: St Francisca Hall]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7ZNfanxqwjuy6F3i0pmqzDZkwiw6DLcTWkQYXex9TJvtA-q1UCEX_grGBX2lQPLHsJdXHo4272LTLdrO-CwKG9i_XuPT2oLdyIUmd8FjCOCrAXezDDQEl0-VK_VLxF7dV6qQiLxBQZnJY9as0fzNZiH_6zVodnF4LcQcsUWhT5rti4oq7zaVKFkP3wFp461DFDZo0loka9fmciXZJjqU7HM6PEGBJvZc7_odEfz1MkU4uXthb5qRzIy9o?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6840563,7.8593716,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Law</name>
+        <description><![CDATA[category: faculty<br>nicknames: Law building, law, law faculty<br>note: Faculty of law ]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.682566,7.8610107,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Education</name>
+        <description><![CDATA[category: faculty<br>nicknames: Education, education faculty<br>note: Faculty of education]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6832151,7.8610266,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Management Science</name>
+        <description><![CDATA[category: faculty<br>nicknames: Management science, ms, management science faculty<br>note: Faculty of management science]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6824426,7.8620075,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Toilet</name>
+        <description><![CDATA[category: Service<br>nicknames: Toilet<br>note: Toilet behind law]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6821691,7.8609735,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>EDS Building</name>
+        <description><![CDATA[category: Service<br>nicknames: EDS building, EDS<br>note: EDS]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6842243,7.8609628,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Media and Studio</name>
+        <description><![CDATA[category: service<br>nicknames: Studio<br>note: Studio]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6841009,7.8615367,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>School Market</name>
+        <description><![CDATA[category: eatery<br>nicknames: Market, Eatery, School market<br>note: School Market]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6813928,7.8635508,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Student Affairs</name>
+        <description><![CDATA[category: admin<br>nicknames: Student affairs, Affairs<br>note: School Affairs]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6826769,7.8642779,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Lecture Theatre B</name>
+        <description><![CDATA[category: landmark<br>nicknames: LT B<br>note: School Lecture theatre/hall B]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6831061,7.8642513,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Lecture Theatre A</name>
+        <description><![CDATA[category: landmark<br>nicknames: LT A<br>note: School lecture theatre A]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6821267,7.8627572,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>E-Learning Building</name>
+        <description><![CDATA[category: landmark<br>nicknames: E-Learning, distance learning<br>note: School E-learning building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6822287,7.8635065,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Twin Lecture Theatre</name>
+        <description><![CDATA[category: landmark<br>nicknames: Twin theatre<br>note: School Twin lecture theatre]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6832104,7.8626456,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Albertino Art work</name>
+        <description><![CDATA[category: landmark<br>nicknames: Transformer, art work<br>note: School Art work]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6838436,7.8654689,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Security Building</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7NdbtyRs3gY17m9MsIH_knetzx5qrk8c1W4zClrl3ZzIKAhpb7f9VBt7BTELixR4AZZsqbRnSVEM8zK0GURflPvkw6AzKk9uE0NDh-tLpJjj3TDrvTPw3tMXapeRN3Qu6VKGn3lrON_iu5YANMlUvkZUiULRIgMtGbZ196ApSuM9I7ZFtRtGu_eSSzLK-FYYJzHCU_Fj1H4YfczokPpSxJiVn562f-OitCGVqs3vj1bL95ti7tkxLgEGI?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: Service<br>nicknames: Security building, security post<br>note: School Security]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7NdbtyRs3gY17m9MsIH_knetzx5qrk8c1W4zClrl3ZzIKAhpb7f9VBt7BTELixR4AZZsqbRnSVEM8zK0GURflPvkw6AzKk9uE0NDh-tLpJjj3TDrvTPw3tMXapeRN3Qu6VKGn3lrON_iu5YANMlUvkZUiULRIgMtGbZ196ApSuM9I7ZFtRtGu_eSSzLK-FYYJzHCU_Fj1H4YfczokPpSxJiVn562f-OitCGVqs3vj1bL95ti7tkxLgEGI?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6825978,7.8679239,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Social Science</name>
+        <description><![CDATA[category: faculty<br>nicknames: Social Science<br>note: Social Science building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6829592,7.8632172,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Senate Building</name>
+        <description><![CDATA[category: admin<br>nicknames: Senate, senate building<br>note: School senate building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6836877,7.8665285,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Admin Building</name>
+        <description><![CDATA[category: admin<br>nicknames: Admin, admin building<br>note: School admin building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6839023,7.8673043,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Joseph & Enesi oyeyani makoju memorial lecture theatre]]></name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4sQaHBIsHQCZlDPja5FDEegKTouNHBS-06OHwKb1ijEvEePzgXzTN3LMEvpw9iV0qHDiTzXzdH2a5j3DjDQWpX-PrEjv_GcxBp-yAktzUpxgsVapNnqMgBlEpdpfqu_FHJa5nspqV8gE0RevBEmKrJg5XB_5B8-JyNIEtuuTLZ7lBPCZOzqLi7XYOLDQBHR8sjJn_KZMfjS0rJZXGj_EWSdhLlxT7t7Pe_3QTp2v9IsKKW2KJByr0ms-A?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>nicknames: Memorial lecture theatre, LT<br>note: School Memorial lecture theatre]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4sQaHBIsHQCZlDPja5FDEegKTouNHBS-06OHwKb1ijEvEePzgXzTN3LMEvpw9iV0qHDiTzXzdH2a5j3DjDQWpX-PrEjv_GcxBp-yAktzUpxgsVapNnqMgBlEpdpfqu_FHJa5nspqV8gE0RevBEmKrJg5XB_5B8-JyNIEtuuTLZ7lBPCZOzqLi7XYOLDQBHR8sjJn_KZMfjS0rJZXGj_EWSdhLlxT7t7Pe_3QTp2v9IsKKW2KJByr0ms-A?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6865898,7.8677013,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Library</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR406FguhYHrjE4mi8w8gNbMTram2l8F-yTFP_qdGXFMlUCHFDd-B-ETxReTJkq62antkh6xb1jqlzdEQ7WpW40NAOut5u9juyKYhBY_WZoavoPrWxKwA9lSCwcFUvTfda87PP244HuttSWeATZLfCyvfNJAZfA6jQdplK4GlYadFG5ZpOPO2mUjA-cp2hPTtCwYereXecWo8Ws8aHmTyRJEWLiU2DaAXAqL7IdyD8ydxO4Dprqsw22zNyk?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: service<br>nicknames: Library, School library<br>note: School Library]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR406FguhYHrjE4mi8w8gNbMTram2l8F-yTFP_qdGXFMlUCHFDd-B-ETxReTJkq62antkh6xb1jqlzdEQ7WpW40NAOut5u9juyKYhBY_WZoavoPrWxKwA9lSCwcFUvTfda87PP244HuttSWeATZLfCyvfNJAZfA6jQdplK4GlYadFG5ZpOPO2mUjA-cp2hPTtCwYereXecWo8Ws8aHmTyRJEWLiU2DaAXAqL7IdyD8ydxO4Dprqsw22zNyk?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6863922,7.8684027,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>ICT</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7rV6r2dsPO6HmXrNfRLd_z3yQZGKeMjeWqrPGbVBj1M8NaEOilAwaZhXceAX7k28mNqksoWKK9qQqU4nqnQEb7qU0jpjR5qUX1HCeWyGfLQn4kEkeNUdoTltHXkN5xYxHGf2Np4h0BxHLJskkT4hw39aAok0rZtIOL_vWKLpLlk7u2YWYZZPUlUdcar8GPzVzbKc0xGMEQnfO79aTRc3bITX1qA7dtLcsbxOO9jjNIOGjPmvroc7NLBiM?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: service<br>nicknames: ICT, School ICT<br>note: School ICT]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7rV6r2dsPO6HmXrNfRLd_z3yQZGKeMjeWqrPGbVBj1M8NaEOilAwaZhXceAX7k28mNqksoWKK9qQqU4nqnQEb7qU0jpjR5qUX1HCeWyGfLQn4kEkeNUdoTltHXkN5xYxHGf2Np4h0BxHLJskkT4hw39aAok0rZtIOL_vWKLpLlk7u2YWYZZPUlUdcar8GPzVzbKc0xGMEQnfO79aTRc3bITX1qA7dtLcsbxOO9jjNIOGjPmvroc7NLBiM?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6863615,7.8689461,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Pharmacy</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5n76TPAIR5Wj09IO20hQBgTkcTSr1yRnUQ6vn9H3ML9u786N1CX0gCF5QNI-vrhkAJdrd2klkP-JP_yH5RkyyEiPOJpChz7h3-uO5iyOoKaUE6DTULHjq3B7S0AXtiWdwZ8qVC48x5QfQ8bg5-ygQmGXl3TLfebBnib8fmi2ESdZFJSRI5ThEAAH0knEnRJfpK4LrNkzW9tfDJQvPcyPKCTOiKhHGx9L2D_7d36zUm1TGNBSdRsF8VzjQ?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: Pharmacy, Pharmacy building<br>note: Faculty of pharmacy]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5n76TPAIR5Wj09IO20hQBgTkcTSr1yRnUQ6vn9H3ML9u786N1CX0gCF5QNI-vrhkAJdrd2klkP-JP_yH5RkyyEiPOJpChz7h3-uO5iyOoKaUE6DTULHjq3B7S0AXtiWdwZ8qVC48x5QfQ8bg5-ygQmGXl3TLfebBnib8fmi2ESdZFJSRI5ThEAAH0knEnRJfpK4LrNkzW9tfDJQvPcyPKCTOiKhHGx9L2D_7d36zUm1TGNBSdRsF8VzjQ?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6845913,7.8702644,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Engineering</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5_V7q1lkpQ-Od_XxdgpHW73FqUQXILa6KyZKTDYWYm_LBO2sNbArxytXrZwicxbGzUQ2KVFXZE0hzhNy4SjIuAmUfi9U-RF9ifW6mIl_n9KOruvi7SXHD-ossueeuAUDxVMQVWO9UdtYRTISKpYL5t-NL0C68jp40ihgYDeaZWrpWBo1RNn0MYuOaJQpZCp8WOgapcaq8xcEGd18QMWDuwun0JVcjt1H3X4YNQaT4pZcmZ-KcGrtAFCOo?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: Engineering<br>note: Faculty of Engineering]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5_V7q1lkpQ-Od_XxdgpHW73FqUQXILa6KyZKTDYWYm_LBO2sNbArxytXrZwicxbGzUQ2KVFXZE0hzhNy4SjIuAmUfi9U-RF9ifW6mIl_n9KOruvi7SXHD-ossueeuAUDxVMQVWO9UdtYRTISKpYL5t-NL0C68jp40ihgYDeaZWrpWBo1RNn0MYuOaJQpZCp8WOgapcaq8xcEGd18QMWDuwun0JVcjt1H3X4YNQaT4pZcmZ-KcGrtAFCOo?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6832233,7.8696586,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bus Stop</name>
+        <description><![CDATA[category: landmark<br>nicknames: Bus stop<br>note: School bus transport for Adankolo and Felele.]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6830119,7.8674952,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Block A</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6msuo84fUpBlq2EQRMaJiIbjfNjYGwdEWg_hVp4sp62dQxRYC7n0y-HIwCN1wmoJvqOXa1W3dddNV_5elvjH9thmnmpChtzjgi_o8sMj-cUBEjM2B3D34Hcm-DUVp4Ysj5CDW6XnSHvNDv8NO3XSoelDMQhlrQQYzi8RsWSpuf_OfuAvN0dNbv1wWLi55pUXZwk4LGI0bv9BcnlwN9lrZ1K9jS8o7yB5ClYche-BsaYgXTuHkIyhzDXe8?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: biotechnology, biochemistry<br>note: Block/Building A]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6msuo84fUpBlq2EQRMaJiIbjfNjYGwdEWg_hVp4sp62dQxRYC7n0y-HIwCN1wmoJvqOXa1W3dddNV_5elvjH9thmnmpChtzjgi_o8sMj-cUBEjM2B3D34Hcm-DUVp4Ysj5CDW6XnSHvNDv8NO3XSoelDMQhlrQQYzi8RsWSpuf_OfuAvN0dNbv1wWLi55pUXZwk4LGI0bv9BcnlwN9lrZ1K9jS8o7yB5ClYche-BsaYgXTuHkIyhzDXe8?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6833491,7.8688973,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Computing</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7BDzdr5Wyd7Il5qadn4SNb3zWcbJUvg3oAN9-Fit9oxgEe9gc5H4c5fvCGqMfgiUdzOdhC1Gjz4FQ9hl7DBYJGXwzl6jyv1ETmOMx2yXf27F3IV23pNIKTMWj8seWgRRA6pR9J2M4yJ1Vroqy5BrWCB-nETZbJG1xCqOuGlzEj3cOwPegwe6Wd8aCO10XhV274013ZWhBztUyCldMKULHHvu8_HpJz0lAlRsZ7MXKO6MRwwVODE3aeLd8?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: computing, computer science, statistics, industrial chemistry<br>note: Faculty of computING]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7BDzdr5Wyd7Il5qadn4SNb3zWcbJUvg3oAN9-Fit9oxgEe9gc5H4c5fvCGqMfgiUdzOdhC1Gjz4FQ9hl7DBYJGXwzl6jyv1ETmOMx2yXf27F3IV23pNIKTMWj8seWgRRA6pR9J2M4yJ1Vroqy5BrWCB-nETZbJG1xCqOuGlzEj3cOwPegwe6Wd8aCO10XhV274013ZWhBztUyCldMKULHHvu8_HpJz0lAlRsZ7MXKO6MRwwVODE3aeLd8?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6849798,7.8686263,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>central for atomspheric research national space research and development agency</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6vAfUL7dj4bxB90LbDhfEYlY_lvviWzhrQoJcc5z8GoqbrGMYFzSMZ3Iz8_taX6BA29LAFNZXO2SJF9yQKuFqQDOlgOu8484D4ElIHVdj6armB-goRwCJ27hbQ-o85BHarh86c_5Lep-_XMBL2aG4tIR0qHl9JNJt8wnXq1gNbxl_86MVxqND00p3IPSGh31XoZ4FBtFQdRAzzoUXDVKoh1XnjlIcVAnwdSD9Gxe7Uc5OCJl9Ca2jb6aQ?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: service<br>nicknames: atmospheric research, research building<br>note: central for atomspheric research national space research and]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6vAfUL7dj4bxB90LbDhfEYlY_lvviWzhrQoJcc5z8GoqbrGMYFzSMZ3Iz8_taX6BA29LAFNZXO2SJF9yQKuFqQDOlgOu8484D4ElIHVdj6armB-goRwCJ27hbQ-o85BHarh86c_5Lep-_XMBL2aG4tIR0qHl9JNJt8wnXq1gNbxl_86MVxqND00p3IPSGh31XoZ4FBtFQdRAzzoUXDVKoh1XnjlIcVAnwdSD9Gxe7Uc5OCJl9Ca2jb6aQ?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6841752,7.869984,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Toilet</name>
+        <description><![CDATA[category: service<br>nicknames: Toilet, Bathroom<br>note: School Toilet behind ICT]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6869193,7.8684068,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>FSLT 1</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7RnoiP98qrCDIOL6tbVUBu72rDb4Nc858IfEOZmLDOTa-OAMokZpxUqGHInkNjL1pjgISphK84ww3xWAOuGTBk8OMy43ubz6xvf75ItPL5HiAql07ry4fVcsXnVT7krK4VvWEPbF-PUeDXi5pxi1r5WSp_xWlJiKSWf0UhrnVoTuGG-sBKrOZBrp7x6wRc-qhKk1CoSCTnmkldaR2lYz84rP10vj5U1i01p_y0ativQb1hxLmf7dNGtMQ?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>nicknames: Fslt 1, fslt a<br>note: School Faculty of science lecture theatre]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7RnoiP98qrCDIOL6tbVUBu72rDb4Nc858IfEOZmLDOTa-OAMokZpxUqGHInkNjL1pjgISphK84ww3xWAOuGTBk8OMy43ubz6xvf75ItPL5HiAql07ry4fVcsXnVT7krK4VvWEPbF-PUeDXi5pxi1r5WSp_xWlJiKSWf0UhrnVoTuGG-sBKrOZBrp7x6wRc-qhKk1CoSCTnmkldaR2lYz84rP10vj5U1i01p_y0ativQb1hxLmf7dNGtMQ?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6837328,7.868901,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>FSLT 2</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6bxP_EIrnRj8YaFpNUgFaj6fEgJipBOK_4BVZrQSsni9TTJzlnYpgmlJ3ep8hZdt4d-DAfMLSCVX-gsExywpO1WuporoyKzZJRNjFWcGvA1RYDuF3HOI5DxYvNY8yldElLBqd9JeKpo53Gn1Qw2nea7R0_wNndhbZ5bKQCYH2f7mmSOg2H8T0A0JyvWz5HaWoObitCZLDbrh2C6jWHoi2Fz711MxwUaiAapMWi7CBBUH61gTJ7zG6QHcU?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>nicknames: fslt 2, fslt b<br>note: School Faculty of science lecture theatre 2]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6bxP_EIrnRj8YaFpNUgFaj6fEgJipBOK_4BVZrQSsni9TTJzlnYpgmlJ3ep8hZdt4d-DAfMLSCVX-gsExywpO1WuporoyKzZJRNjFWcGvA1RYDuF3HOI5DxYvNY8yldElLBqd9JeKpo53Gn1Qw2nea7R0_wNndhbZ5bKQCYH2f7mmSOg2H8T0A0JyvWz5HaWoObitCZLDbrh2C6jWHoi2Fz711MxwUaiAapMWi7CBBUH61gTJ7zG6QHcU?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6849881,7.8689276,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of life science building</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5ei-uj9L0jE7yDgQJjZyR5oAvaS0Ouv5UQNIkxnOmcYp9y6bEb8lI5c6y1nv0HJm7zsIGupX9_UXARsdBkRCkhCjDUu_jKGsJXBQc5p7qY_mbO1bs4JT1hUE3El2y1ss6zyG6AjD2AezmKRz08Ufhh1_zz8oKmNf7vEm7A3aaIywa8-zjjPZflH4SghfD3YKhO3qIQy7r5obiCcIT0ZMa4P7yKjpqE-eqKEv1AJsxIOeYTv-CFzigQVoM?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: Science, life science<br>note: Faculty of life science building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5ei-uj9L0jE7yDgQJjZyR5oAvaS0Ouv5UQNIkxnOmcYp9y6bEb8lI5c6y1nv0HJm7zsIGupX9_UXARsdBkRCkhCjDUu_jKGsJXBQc5p7qY_mbO1bs4JT1hUE3El2y1ss6zyG6AjD2AezmKRz08Ufhh1_zz8oKmNf7vEm7A3aaIywa8-zjjPZflH4SghfD3YKhO3qIQy7r5obiCcIT0ZMa4P7yKjpqE-eqKEv1AJsxIOeYTv-CFzigQVoM?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6837347,7.8686034,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Girls hostel</name>
+        <description><![CDATA[category: hostel<br>nicknames: hostel, girls hostel<br>note: School girls hostel]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6797928,7.870091,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Boys hostel</name>
+        <description><![CDATA[category: hostel<br>nicknames: hostel, boys hostel<br>note: School boys hostel]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6790525,7.8684571,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Block G</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6v5j728ZXH-7a7zUrv2mDPRS8D987kq7lfC4Bnis3BuTKxhqjkSx9H_YnweNVckMJ_Ivr5zntXI017gZRx74C4M73txvCnNcTFAt35ZcnwasD6b0Wq67PGiQKFlcK1wUZYdCYGN9a4SRqWeX7lZKFzeEiHqurToK28XaZR9DFGQ5j76CJ4u9GfmpBAOYjsZns1qvQHOYfGy57P_OQAIUJze4axh_SqKlAgzPoZsQg8RRLBgpQQnivEkwk?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: mathematics, geology, economics<br>note: Faculty of Mathematics, Economics & Geology]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6v5j728ZXH-7a7zUrv2mDPRS8D987kq7lfC4Bnis3BuTKxhqjkSx9H_YnweNVckMJ_Ivr5zntXI017gZRx74C4M73txvCnNcTFAt35ZcnwasD6b0Wq67PGiQKFlcK1wUZYdCYGN9a4SRqWeX7lZKFzeEiHqurToK28XaZR9DFGQ5j76CJ4u9GfmpBAOYjsZns1qvQHOYfGy57P_OQAIUJze4axh_SqKlAgzPoZsQg8RRLBgpQQnivEkwk?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6853728,7.8689504,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Block D</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4G8hGT9IyhgQ2mMEaxRRMYGAsIX88ugpiX5OSjCjTB2XM0WiYEjYZXR55R3cV9InL1vENTR_5Ngb74MFZFL8LGCRaj2mIA8yCPFNG-s8TxU2esqPL_vLMNcVHIzriry1_Qj-tA4e_l6YWBKnZ0mlEaWEHxG32po33U3iVHPIezGl8uXprYirHOl3WsDzVsWe2QYNWZ2kj5Zv9LxkHikvUWbrmY3ngz8g4DBHNXJMxOfbo6iCJPu54nYlo?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: Zoology, microbiology<br>note: Department of Zoology, microbiology]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4G8hGT9IyhgQ2mMEaxRRMYGAsIX88ugpiX5OSjCjTB2XM0WiYEjYZXR55R3cV9InL1vENTR_5Ngb74MFZFL8LGCRaj2mIA8yCPFNG-s8TxU2esqPL_vLMNcVHIzriry1_Qj-tA4e_l6YWBKnZ0mlEaWEHxG32po33U3iVHPIezGl8uXprYirHOl3WsDzVsWe2QYNWZ2kj5Zv9LxkHikvUWbrmY3ngz8g4DBHNXJMxOfbo6iCJPu54nYlo?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6841229,7.8689185,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Block E</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7m4uYqxkfbkGBwVEqIr7g6eMBaFRzWr-TjTTmJFNPMyQJMu7Hj4WF3qqhrbWnCPO_EQXMrWtYUz58_V2O3eQN7ZwgQKNmjObKbge_-RuCuPpv6b-VmsBosSoU-WglCHHLkjnYhwnB2DebwbB6LzMe9BxhAEJuPL03B6t3z-kvHtyef5KT4XlwIZ2_r0xGy9p9xTNFLoxfyYDqkr7emo0MWwZjzc7XE20xknZRPQzMfa-Xl5nvt18x2OAc?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>nicknames: Chemistry <br>note: Department of Chemistry]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7m4uYqxkfbkGBwVEqIr7g6eMBaFRzWr-TjTTmJFNPMyQJMu7Hj4WF3qqhrbWnCPO_EQXMrWtYUz58_V2O3eQN7ZwgQKNmjObKbge_-RuCuPpv6b-VmsBosSoU-WglCHHLkjnYhwnB2DebwbB6LzMe9BxhAEJuPL03B6t3z-kvHtyef5KT4XlwIZ2_r0xGy9p9xTNFLoxfyYDqkr7emo0MWwZjzc7XE20xknZRPQzMfa-Xl5nvt18x2OAc?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6845735,7.8689557,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Agriculture</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6DzP-TjUee9MDsL5s9FoMBSHKgJYuKFYF-Tp6s0w4tREArHqDMjGiqqR8t_IcB2BvdW8Lhb5JdMurfV_pFSBJ5SWbIgeRB0G3xAC4rxfh1t1iPSQRuJNgcJ6CKPBAFjFHK6yJY5W9o_blm7RBLQ36inQgB5xgj5W0a-164nbG1jOaL09iG_EFBGvxgUYo_ocoAuzJ457E2WyO3zRkTO0kRdJB44n5YMOGU7PjD_o0nHYtiiqJkROxDpGQ?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: faculty<br>nicknames: agriculture<br>note: Faculty of Agriculture]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6DzP-TjUee9MDsL5s9FoMBSHKgJYuKFYF-Tp6s0w4tREArHqDMjGiqqR8t_IcB2BvdW8Lhb5JdMurfV_pFSBJ5SWbIgeRB0G3xAC4rxfh1t1iPSQRuJNgcJ6CKPBAFjFHK6yJY5W9o_blm7RBLQ36inQgB5xgj5W0a-164nbG1jOaL09iG_EFBGvxgUYo_ocoAuzJ457E2WyO3zRkTO0kRdJB44n5YMOGU7PjD_o0nHYtiiqJkROxDpGQ?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6859744,7.8551166,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Zoo</name>
+        <description><![CDATA[category: landmark<br>nicknames: zoo, farm<br>note: School zoo]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6879532,7.8572096,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Solar Farm</name>
+        <description><![CDATA[<img src="https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6LsxL21q_zf5Ya-IwdF2ebdEhoB5jitwzJ0BIEb9Qpk9MrrfGvOYvib67aMS0aC8yQ8kYViCO1eIOcA-GHQR9r5RmzYq2Yk4vsH_1o7dlUgThsgKV9Yh-UpKiH5geBnQ0ffnaKWAGo73-pPkR1su0b-T8JMd0AjfDShbI4linEbGXu0w2rvtloApm62JxXveewaSacmTBae110QPF2QmTOXbXQqLd7D3gjipuCPMpFmBfKpTsr0PUYmRc?authuser=0&fife=s16383" height="200" width="auto" /><br><br>category: landmark<br>nicknames: solar Farm, solar<br>note: School Solar Farm]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR6LsxL21q_zf5Ya-IwdF2ebdEhoB5jitwzJ0BIEb9Qpk9MrrfGvOYvib67aMS0aC8yQ8kYViCO1eIOcA-GHQR9r5RmzYq2Yk4vsH_1o7dlUgThsgKV9Yh-UpKiH5geBnQ0ffnaKWAGo73-pPkR1su0b-T8JMd0AjfDShbI4linEbGXu0w2rvtloApm62JxXveewaSacmTBae110QPF2QmTOXbXQqLd7D3gjipuCPMpFmBfKpTsr0PUYmRc?authuser=0&fife=s16383]]></value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            6.6816641,7.8574816,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Islamic Studies</name>
+        <description><![CDATA[category: landmark<br>nicknames: islamic, islamic studies<br>note: School Islamic Studies Building]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <Point>
+          <coordinates>
+            6.6825028,7.86035,0
+          </coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Paths</name>
+      <Placemark>
+        <name>Road 1</name>
+        <description>From Gate to Science junction</description>
+        <styleUrl>#line-000000-1200</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6844275,7.8518804,0
+            6.6841218,7.8540485,0
+            6.6840735,7.85475,0
+            6.6839876,7.8559669,0
+            6.6839555,7.856408,0
+            6.6838589,7.8579862,0
+            6.683816,7.8586399,0
+            6.6837409,7.8598196,0
+            6.6836658,7.8612491,0
+            6.6836282,7.862009,0
+            6.6835853,7.8626785,0
+            6.6835156,7.8637094,0
+            6.6833976,7.8654258,0
+            6.6833546,7.8664886,0
+            6.6833171,7.8677587,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 2</name>
+        <description>Science Junction to Library</description>
+        <styleUrl>#line-000000-1200</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6833171,7.8677587,0
+            6.6844061,7.8678679,0
+            6.684854,7.8678918,0
+            6.6857981,7.8678706,0
+            6.6868576,7.86803,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Mosque Route</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6829524,7.8542065,0
+            6.6833386,7.8544775,0
+            6.6840735,7.85475,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Faculty of Agricture Route</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6841111,7.8541002,0
+            6.6863964,7.854807,0
+            6.6867182,7.8549717,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Zoo route</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6866646,7.8549345,0
+            6.6869854,7.8552201,0
+            6.6880797,7.8567877,0
+            6.6889541,7.857723,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Major Road 3</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6838578,7.8579715,0
+            6.6827461,7.8581455,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Major Road 3</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6827461,7.8581455,0
+            6.6828922,7.8606458,0
+            6.6827233,7.8624127,0
+            6.6826026,7.8634489,0
+            6.6826267,7.8636322,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Social Science Road</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6835172,7.8636641,0
+            6.6826267,7.8636322,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 15</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6826267,7.8636322,0
+            6.6825617,7.863758,0
+            6.6821915,7.8640317,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 16</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6821915,7.8640317,0
+            6.6819569,7.8638669,0
+            6.6818697,7.8633993,0
+            6.6824732,7.8629423,0
+            6.6826582,7.8629662,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 17</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6821915,7.8640317,0
+            6.6823806,7.8644156,0
+            6.6825416,7.8646149,0
+            6.6829064,7.8643678,0
+            6.6829278,7.8643306,0
+            6.6829895,7.8636464,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 18</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6827637,7.861975,0
+            6.6836273,7.8619856,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 19</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.68374,7.8598002,0
+            6.6828388,7.859747,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 20</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6835388,7.8597895,0
+            6.6828803,7.8606119,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 21</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6827461,7.8581455,0
+            6.6825213,7.8581426,0
+            6.6818937,7.8579779,0
+            6.6817971,7.8576378,0
+            6.6817354,7.8575421,0
+            6.6815584,7.8574943,0
+            6.681317,7.8575076,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 22</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6829524,7.8542065,0
+            6.6828806,7.8543744,0
+            6.6826446,7.8544847,0
+            6.6824635,7.8545113,0
+            6.6820125,7.8544927,0
+            6.6818194,7.8545459,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 23</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6818194,7.8545459,0
+            6.6816147,7.8552473,0
+            6.6812445,7.8557628,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 24</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.681317,7.8575076,0
+            6.6813885,7.8579675,0
+            6.6813536,7.8582465,0
+            6.6814046,7.858491,0
+            6.6815521,7.8588178,0
+            6.6816326,7.8589613,0
+            6.6816701,7.8591712,0
+            6.6816487,7.8601436,0
+            6.681587,7.8603482,0
+            6.6814904,7.8605289,0
+            6.6814529,7.8608292,0
+            6.6813778,7.8613393,0
+            6.6813644,7.8615253,0
+            6.6812597,7.8619796,0
+            6.6812249,7.862341,0
+            6.680903,7.8634622,0
+            6.680506,7.8642593,0
+            6.6800554,7.864897,0
+            6.6795834,7.8654178,0
+            6.6794761,7.865439,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 25</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6821915,7.8640317,0
+            6.6814931,7.8646685,0
+            6.6811417,7.8649262,0
+            6.6805972,7.865176,0
+            6.6799079,7.8653593,0
+            6.6794761,7.865439,0
+            6.6793376,7.8655007,0
+            6.6788924,7.8656548,0
+            6.6785327,7.8659631,0
+            6.6783182,7.8665052,0
+            6.6786615,7.8669834,0
+            6.6797344,7.8677805,0
+            6.6811076,7.8685776,0
+            6.6813008,7.8685989,0
+            6.6817621,7.8683544,0
+            6.6823415,7.8677805,0
+            6.6825882,7.8677167,0
+            6.6833171,7.8677587,0
+            6.6833177,7.8677114,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 26</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6797344,7.8677805,0
+            6.6797138,7.8689094,0
+            6.6797023,7.8696672,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 27</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6797138,7.8689094,0
+            6.679007,7.8690223,0
+            6.6788166,7.8690196,0
+            6.6787549,7.8689718,0
+            6.6785644,7.8689532,0
+            6.6784276,7.8688762,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 28</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6828803,7.8606119,0
+            6.6826451,7.8604831,0
+            6.6824734,7.8605575,0
+            6.6823661,7.8608764,0
+            6.6821676,7.8619232,0
+            6.6820603,7.8623377,0
+            6.6817653,7.8627363,0
+            6.681717,7.8631242,0
+            6.6818697,7.8633993,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 29</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6844246,7.8518944,0
+            6.6844554,7.8517589,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 30</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.686175,7.8679266,0
+            6.6860856,7.8690172,0
+            6.6861058,7.8688394,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 31</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6833171,7.8677587,0
+            6.6832478,7.8684167,0
+            6.6835053,7.8686506,0
+            6.6835375,7.869081,0
+            6.683339,7.8691235,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 32</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6835375,7.869081,0
+            6.6838486,7.8691952,0
+            6.684031,7.8697107,0
+            6.6843153,7.8697452,0
+            6.6844762,7.8699472,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 33</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.684759,7.8700051,0
+            6.6848394,7.869851,0
+            6.6847268,7.8691655,0
+            6.6848555,7.8690061,0
+            6.6848502,7.8688201,0
+            6.684759,7.8686872,0
+            6.6843459,7.86848,0
+            6.6844061,7.8678679,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 34</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6833171,7.8677587,0
+            6.6843459,7.86848,0
+            6.6843302,7.8691668,0
+            6.6847268,7.8691655,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 35</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6838486,7.8691952,0
+            6.6843302,7.8691668,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 36</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6843986,7.8679227,0
+            6.6847714,7.8683067,0
+            6.6848961,7.8684169,0
+            6.6855023,7.86868,0
+            6.6858912,7.8688101,0
+            6.6861058,7.8688394,0
+            6.6861085,7.8687836,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Line 37</name>
+        <styleUrl>#line-000000-1200-nodesc</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            6.6848961,7.8684169,0
+            6.6850195,7.868401,0
+            6.6853307,7.8684275,0
+            6.6855452,7.8684036,0
+            6.686138,7.8683877,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

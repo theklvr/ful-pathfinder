@@ -1,0 +1,34 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+
+# Raw survey photos (100+ MB) — too large for plain git, keep locally.
+# The survey KML itself (Assets/*.kml) is small and IS tracked.
+Assets/images/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Claude Code session state
+.claude/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
