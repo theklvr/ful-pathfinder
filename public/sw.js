@@ -10,7 +10,9 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(['/', PMTILES_PATH]))
+      .then((cache) =>
+        cache.addAll(['/', PMTILES_PATH, '/maplibre/maplibre-gl-worker.mjs', '/maplibre/maplibre-gl-shared.mjs']),
+      )
       .catch(() => {}), // offline on first install: nothing to precache yet
   );
 });
@@ -28,10 +30,17 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // The pmtiles library reads the basemap via many concurrent HTTP Range
-  // requests per map load. The Cache API doesn't serve partial content on
-  // its own, so slice the cached full file by hand.
+  // requests per map load. The real server (Vercel/vite) already handles
+  // Range requests correctly and fast, so stay out of the way while online:
+  // pass every request straight through to the network untouched, and only
+  // fall back to a cached full-file copy when the network is unreachable.
+  // (An earlier version of this handler sliced Range requests by hand from
+  // a cached buffer for every request; that introduced an intermittent
+  // race that corrupted responses. Network-first removes the SW from the
+  // hot path entirely, which is both simpler and more reliable.)
   if (url.pathname === PMTILES_PATH) {
     event.respondWith(handlePmtilesRequest(event.request));
+    event.waitUntil(cacheFullPmtilesFile());
     return;
   }
 
@@ -49,47 +58,41 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// A real map load fires many *concurrent* range requests for the same file.
-// Reading the cached Response's body via clone().arrayBuffer() separately
-// for each one is exactly the kind of concurrent-stream-read pattern that's
-// fragile across browsers/versions. Instead, decode the file into a single
-// in-memory ArrayBuffer once per service worker lifetime (memoized as a
-// promise so concurrent callers all await the same read, not one each),
-// and slice synchronously from that for every subsequent request.
-let pmtilesBufferPromise = null;
+// Fetches the whole pmtiles file once (no Range header) and stores it in
+// the cache as a plain full-file response, purely so offline requests have
+// something to slice from. Memoized so it only runs once per SW lifetime.
+let fullFileCachePromise = null;
 
-async function getPmtilesBuffer() {
-  if (pmtilesBufferPromise) return pmtilesBufferPromise;
-
-  pmtilesBufferPromise = (async () => {
+function cacheFullPmtilesFile() {
+  if (fullFileCachePromise) return fullFileCachePromise;
+  fullFileCachePromise = (async () => {
     const cache = await caches.open(CACHE_NAME);
-    let full = await cache.match(PMTILES_PATH);
-
-    if (!full) {
-      const response = await fetch(new Request(PMTILES_PATH, { headers: {} }));
-      if (!response.ok) throw new Error(`pmtiles fetch failed: ${response.status}`);
-      await cache.put(PMTILES_PATH, response.clone());
-      full = response;
-    }
-
-    return full.arrayBuffer();
-  })();
-
-  pmtilesBufferPromise.catch(() => {
-    pmtilesBufferPromise = null; // allow retry on the next request if this failed
-  });
-
-  return pmtilesBufferPromise;
+    const existing = await cache.match(PMTILES_PATH);
+    if (existing) return;
+    const response = await fetch(new Request(PMTILES_PATH, { headers: {} }));
+    if (response.ok) await cache.put(PMTILES_PATH, response);
+  })().catch(() => {});
+  return fullFileCachePromise;
 }
 
 async function handlePmtilesRequest(request) {
-  let buffer;
   try {
-    buffer = await getPmtilesBuffer();
+    const response = await fetch(request);
+    if (response.ok || response.status === 206) return response;
+    throw new Error(`pmtiles network response not ok: ${response.status}`);
   } catch {
+    return serveSlicedFromCache(request);
+  }
+}
+
+async function serveSlicedFromCache(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(PMTILES_PATH);
+  if (!cached) {
     return new Response('Map unavailable offline — visit once online to cache it.', { status: 503 });
   }
 
+  const buffer = await cached.arrayBuffer();
   const rangeHeader = request.headers.get('range');
   if (!rangeHeader) {
     return new Response(buffer, { status: 200, headers: { 'Content-Type': 'application/octet-stream' } });
