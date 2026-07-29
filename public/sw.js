@@ -27,9 +27,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // The pmtiles library reads the basemap via HTTP Range requests. The
-  // Cache API doesn't serve partial content on its own, so slice the
-  // cached full file by hand.
+  // The pmtiles library reads the basemap via many concurrent HTTP Range
+  // requests per map load. The Cache API doesn't serve partial content on
+  // its own, so slice the cached full file by hand.
   if (url.pathname === PMTILES_PATH) {
     event.respondWith(handlePmtilesRequest(event.request));
     return;
@@ -49,28 +49,57 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-async function handlePmtilesRequest(request) {
-  const cache = await caches.open(CACHE_NAME);
-  let full = await cache.match(PMTILES_PATH);
+// A real map load fires many *concurrent* range requests for the same file.
+// Reading the cached Response's body via clone().arrayBuffer() separately
+// for each one is exactly the kind of concurrent-stream-read pattern that's
+// fragile across browsers/versions. Instead, decode the file into a single
+// in-memory ArrayBuffer once per service worker lifetime (memoized as a
+// promise so concurrent callers all await the same read, not one each),
+// and slice synchronously from that for every subsequent request.
+let pmtilesBufferPromise = null;
 
-  if (!full) {
-    try {
+async function getPmtilesBuffer() {
+  if (pmtilesBufferPromise) return pmtilesBufferPromise;
+
+  pmtilesBufferPromise = (async () => {
+    const cache = await caches.open(CACHE_NAME);
+    let full = await cache.match(PMTILES_PATH);
+
+    if (!full) {
       const response = await fetch(new Request(PMTILES_PATH, { headers: {} }));
-      if (!response.ok) return response;
+      if (!response.ok) throw new Error(`pmtiles fetch failed: ${response.status}`);
       await cache.put(PMTILES_PATH, response.clone());
       full = response;
-    } catch {
-      return new Response('Map unavailable offline — visit once online to cache it.', { status: 503 });
     }
+
+    return full.arrayBuffer();
+  })();
+
+  pmtilesBufferPromise.catch(() => {
+    pmtilesBufferPromise = null; // allow retry on the next request if this failed
+  });
+
+  return pmtilesBufferPromise;
+}
+
+async function handlePmtilesRequest(request) {
+  let buffer;
+  try {
+    buffer = await getPmtilesBuffer();
+  } catch {
+    return new Response('Map unavailable offline — visit once online to cache it.', { status: 503 });
   }
 
   const rangeHeader = request.headers.get('range');
-  if (!rangeHeader) return full;
+  if (!rangeHeader) {
+    return new Response(buffer, { status: 200, headers: { 'Content-Type': 'application/octet-stream' } });
+  }
 
   const match = /bytes=(\d+)-(\d+)?/.exec(rangeHeader);
-  if (!match) return full;
+  if (!match) {
+    return new Response(buffer, { status: 200, headers: { 'Content-Type': 'application/octet-stream' } });
+  }
 
-  const buffer = await full.clone().arrayBuffer();
   const total = buffer.byteLength;
   const start = Number(match[1]);
   const end = match[2] ? Number(match[2]) : total - 1;

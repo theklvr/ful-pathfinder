@@ -7,6 +7,7 @@ import { CATEGORY_COLOR, DEFAULT_MARKER_COLOR } from '../data/categories';
 
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
+window.__pmtilesProtocol = protocol;
 
 // Felele (permanent site) campus, Federal University Lokoja.
 // Source: Wikipedia/Wikidata (7°51'34"N 6°41'01"E) — a public reference, not a
