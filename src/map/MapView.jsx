@@ -27,7 +27,19 @@ const PLACE_ZOOM = 18;
 const NAV_ZOOM = 18.5;
 
 const MapView = forwardRef(function MapView(
-  { places, nodes = [], edges = [], route, userPosition, navigating = false, meActive = false, onPlaceClick, onUserPositionDrag, onToggleMe },
+  {
+    places,
+    nodes = [],
+    edges = [],
+    route,
+    userPosition,
+    navigating = false,
+    meActive = false,
+    onPlaceClick,
+    onUserPositionDrag,
+    onToggleMe,
+    onOpenDirections,
+  },
   ref,
 ) {
   const containerRef = useRef(null);
@@ -323,6 +335,11 @@ const MapView = forwardRef(function MapView(
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="3" />
           <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+        </svg>
+      </button>
+      <button type="button" className="directions-fab" aria-label="Directions" onClick={onOpenDirections}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 11l18-8-8 18-2-8-8-2z" />
         </svg>
       </button>
       <button

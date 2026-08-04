@@ -1,8 +1,24 @@
+import { useEffect, useState } from 'react';
 import { CATEGORY_COLOR, DEFAULT_MARKER_COLOR } from '../data/categories';
 import { CATEGORY_ICON_PATH, DEFAULT_ICON_PATH } from '../data/categoryIcons';
+import { fetchRatingSummaries } from '../data/reviews';
 import PlaceActions from './PlaceActions';
 
 export default function PlaceList({ places, categoryLabel, onSelectPlace, onDirections, onClose }) {
+  const [ratings, setRatings] = useState(new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchRatingSummaries(places.map((p) => p.id))
+      .then((summaries) => {
+        if (!cancelled) setRatings(summaries);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [places]);
+
   return (
     <div className="place-list">
       <div className="place-list-header">
@@ -40,6 +56,11 @@ export default function PlaceList({ places, categoryLabel, onSelectPlace, onDire
                 )}
                 <div className="place-list-item-body">
                   <span className="place-list-item-name">{place.name}</span>
+                  {ratings.has(place.id) && (
+                    <span className="place-list-item-rating">
+                      ★ {ratings.get(place.id).average.toFixed(1)} ({ratings.get(place.id).count})
+                    </span>
+                  )}
                   {place.description && <span className="place-list-item-desc">{place.description}</span>}
                 </div>
               </button>

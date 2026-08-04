@@ -1,11 +1,13 @@
 import { formatDistance, formatDuration } from '../routing/format';
 import { useSwipeToDismiss } from '../hooks/useSwipeToDismiss';
+import PlaceSelectField from './PlaceSelectField';
 
 export default function DirectionsPanel({
   places,
   origin,
   destination,
   onChangeOrigin,
+  onChangeDestination,
   onClose,
   route,
   steps = [],
@@ -14,7 +16,11 @@ export default function DirectionsPanel({
 }) {
   const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
 
-  if (!destination) return null;
+  function handleReverse() {
+    if (!origin || !destination) return;
+    onChangeOrigin(destination);
+    onChangeDestination(origin);
+  }
 
   return (
     <div className="place-card directions-panel" ref={sheetRef}>
@@ -23,26 +29,32 @@ export default function DirectionsPanel({
         ×
       </button>
       <div className="place-card-body">
-        <label className="directions-label">
-          From
-          <select
-            className="directions-select"
-            value={origin?.id ?? ''}
-            onChange={(e) => onChangeOrigin(places.find((p) => p.id === Number(e.target.value)))}
+        <div className="directions-fields">
+          <div className="directions-fields-inputs">
+            <PlaceSelectField label="From" places={places} value={origin} onChange={onChangeOrigin} placeholder="Choose starting point" />
+            <PlaceSelectField label="To" places={places} value={destination} onChange={onChangeDestination} placeholder="Choose destination" />
+          </div>
+          <button
+            type="button"
+            className="directions-reverse"
+            aria-label="Swap origin and destination"
+            disabled={!origin || !destination}
+            onClick={handleReverse}
           >
-            {places.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div className="directions-to">
-          To <strong>{destination.name}</strong>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="17 1 21 5 17 9" />
+              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+              <polyline points="7 23 3 19 7 15" />
+              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+            </svg>
+          </button>
         </div>
 
-        {route ? (
+        {!destination ? (
+          <div className="directions-summary directions-summary-empty">Choose a destination.</div>
+        ) : !origin ? (
+          <div className="directions-summary directions-summary-empty">Choose a starting point.</div>
+        ) : route ? (
           <>
             <div className="directions-summary">
               <span>{formatDistance(route.distanceM)}</span>
@@ -68,9 +80,7 @@ export default function DirectionsPanel({
             </ol>
           </>
         ) : (
-          <div className="directions-summary directions-summary-empty">
-            {origin ? 'No walking route found between these places.' : 'Pick a starting point.'}
-          </div>
+          <div className="directions-summary directions-summary-empty">No walking route found between these places.</div>
         )}
       </div>
     </div>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import MapView from './map/MapView';
 import PlaceCard from './components/PlaceCard';
 import PlaceList from './components/PlaceList';
+import AccountPanel from './components/AccountPanel';
 import CategoryFilter from './components/CategoryFilter';
 import SearchBar from './components/SearchBar';
 import DirectionsPanel from './components/DirectionsPanel';
@@ -11,12 +12,14 @@ import LoadingScreen from './components/LoadingScreen';
 import ErrorBanner from './components/ErrorBanner';
 import { fetchPlaces } from './data/places';
 import { fetchNodes, fetchEdges } from './data/network';
+import { fetchFavoriteIds, addFavorite, removeFavorite } from './data/favorites';
 import { CATEGORIES } from './data/categories';
 import { buildGraph, nearestNodeId } from './routing/graph';
 import { astar, haversineHeuristic } from './routing/astar';
 import { haversine } from './routing/haversine';
 import { buildSteps, currentLiveStep } from './routing/steps';
 import { useLiveLocation } from './location/useLiveLocation';
+import { useAuth } from './lib/auth';
 
 const DEFAULT_ORIGIN_NAME = 'School Gate';
 const ARRIVAL_RADIUS_M = 15;
@@ -44,13 +47,16 @@ export default function App() {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [originPlace, setOriginPlace] = useState(null);
   const [destinationPlace, setDestinationPlace] = useState(null);
+  const [showDirections, setShowDirections] = useState(false);
   const [navigating, setNavigating] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [arrived, setArrived] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [dataError, setDataError] = useState(null);
   const [meActive, setMeActive] = useState(false);
-  const [showAccountNotice, setShowAccountNotice] = useState(false);
+  const [showAccountPanel, setShowAccountPanel] = useState(false);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const auth = useAuth();
   const mapRef = useRef(null);
   const lastSpokenRef = useRef('');
   const arrivalTimerRef = useRef(null);
@@ -86,6 +92,16 @@ export default function App() {
     if (originPlace || places.length === 0) return;
     setOriginPlace(places.find((p) => p.name === DEFAULT_ORIGIN_NAME) ?? places[0]);
   }, [places, originPlace]);
+
+  useEffect(() => {
+    if (!auth.user) {
+      setFavoriteIds(new Set());
+      return;
+    }
+    fetchFavoriteIds(auth.user.id)
+      .then(setFavoriteIds)
+      .catch((err) => console.error(err));
+  }, [auth.user]);
 
   // Give up on live navigation if permission is denied/unavailable, rather
   // than sitting in a "navigating" state with no position to navigate from.
@@ -204,6 +220,7 @@ export default function App() {
   }
 
   function handleSelectPlace(place) {
+    setShowDirections(false);
     setDestinationPlace(null);
     setSelectedPlace(place);
     mapRef.current?.flyTo(place);
@@ -212,7 +229,19 @@ export default function App() {
   function handleStartDirections(place) {
     setSelectedPlace(null);
     setDestinationPlace(place);
+    setShowDirections(true);
     mapRef.current?.flyTo(place);
+  }
+
+  function handleOpenDirections() {
+    setSelectedPlace(null);
+    setActiveCategory(null);
+    setShowDirections(true);
+  }
+
+  function handleCloseDirections() {
+    setShowDirections(false);
+    setDestinationPlace(null);
   }
 
   function handleStartNavigation() {
@@ -227,6 +256,30 @@ export default function App() {
 
   function handleToggleMe() {
     setMeActive((v) => !v);
+  }
+
+  function handleRequireSignIn() {
+    setShowAccountPanel(true);
+  }
+
+  async function handleToggleFavorite(place) {
+    if (!auth.user) {
+      handleRequireSignIn();
+      return;
+    }
+    const isFavorite = favoriteIds.has(place.id);
+    try {
+      if (isFavorite) await removeFavorite(auth.user.id, place.id);
+      else await addFavorite(auth.user.id, place.id);
+      setFavoriteIds((prev) => {
+        const next = new Set(prev);
+        if (isFavorite) next.delete(place.id);
+        else next.add(place.id);
+        return next;
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const navBannerStatusMessage = arrived
@@ -251,6 +304,7 @@ export default function App() {
         onPlaceClick={handleSelectPlace}
         onUserPositionDrag={overridePosition}
         onToggleMe={handleToggleMe}
+        onOpenDirections={handleOpenDirections}
       />
 
       {dataLoading && places.length === 0 && !dataError && <LoadingScreen />}
@@ -281,8 +335,10 @@ export default function App() {
               <button
                 type="button"
                 className="account-button"
+                data-active={showAccountPanel}
+                data-signed-in={!!auth.user}
                 aria-label="Account"
-                onClick={() => setShowAccountNotice((v) => !v)}
+                onClick={() => setShowAccountPanel((v) => !v)}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="8" r="4" />
@@ -290,32 +346,34 @@ export default function App() {
                 </svg>
               </button>
             </div>
-            {showAccountNotice && (
-              <div className="account-notice">
-                Accounts are coming soon.
-                <button type="button" onClick={() => setShowAccountNotice(false)} aria-label="Dismiss">
-                  ×
-                </button>
-              </div>
-            )}
+            {showAccountPanel && <AccountPanel auth={auth} onClose={() => setShowAccountPanel(false)} />}
             <div className="category-filter-wrap">
               <CategoryFilter activeCategory={activeCategory} onSelect={selectCategory} />
             </div>
           </div>
-          {destinationPlace ? (
+          {showDirections ? (
             <DirectionsPanel
               places={places}
               origin={originPlace}
               destination={destinationPlace}
               onChangeOrigin={setOriginPlace}
-              onClose={() => setDestinationPlace(null)}
+              onChangeDestination={setDestinationPlace}
+              onClose={handleCloseDirections}
               route={staticRoute}
               steps={staticSteps}
               onStartNavigation={handleStartNavigation}
               locationStatus={locationStatus}
             />
           ) : selectedPlace ? (
-            <PlaceCard place={selectedPlace} onClose={() => setSelectedPlace(null)} onDirections={handleStartDirections} />
+            <PlaceCard
+              place={selectedPlace}
+              onClose={() => setSelectedPlace(null)}
+              onDirections={handleStartDirections}
+              user={auth.user}
+              isFavorite={favoriteIds.has(selectedPlace.id)}
+              onToggleFavorite={handleToggleFavorite}
+              onRequireSignIn={handleRequireSignIn}
+            />
           ) : activeCategory ? (
             <PlaceList
               places={categoryListPlaces}
