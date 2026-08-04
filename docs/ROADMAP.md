@@ -17,6 +17,7 @@ See `docs/SURVEY-GUIDE.md` for the how. This is the real bottleneck. Start it im
 - [ ] **S1.** Walk Felele campus, record every building and landmark as a waypoint (name, category, photo).
 - [ ] **S2.** Walk every footpath and road, recording GPS tracks, so paths reflect where students actually walk.
 - [ ] **S3.** Clean the data into the two files the build expects: `places.csv` and `network.geojson` (formats in the survey guide).
+- [ ] **S4.** OSM merge: pull the team's saved openstreetmap.org edits (buildings, footpaths, names for Felele campus) via an Overpass Turbo export, convert with `scripts/convert-survey-osm.mjs`, and merge into the canonical survey files with `scripts/merge-survey.mjs`, filling path/place gaps without discarding the existing GPS survey. See `docs/SURVEY-GUIDE.md`.
 
 ---
 

@@ -78,6 +78,44 @@ Minimal example:
 
 Note the coordinate order in GeoJSON is `[lng, lat]`, the reverse of how you say it out loud. The seed script accounts for this, but keep it consistent in the file.
 
+## Keeping OpenStreetMap in sync (the ongoing primary source)
+
+The team maps FUL Felele campus (buildings, footpaths, names) directly on openstreetmap.org using the free iD editor, tracing against satellite imagery. Unlike the one-off Google My Maps export above, this stays editable by anyone on the team going forward, so it's the primary source from here on — it merges with and fills gaps in the existing GPS survey rather than replacing it.
+
+1. **Map or edit in iD.** Save/upload edits to osm.org with a changeset comment before continuing (an unsaved draft in the editor can't be pulled out).
+2. **Pull the data out via Overpass Turbo** (https://overpass-turbo.eu — free, no API key). Run this query, scoped tightly to the Felele campus (adjust the bbox if the mapped area grows):
+
+   ```
+   [out:json][timeout:60];
+   (
+     way["building"](7.848,6.675,7.873,6.692);
+     node["amenity"](7.848,6.675,7.873,6.692);
+     way["amenity"](7.848,6.675,7.873,6.692);
+     node["shop"](7.848,6.675,7.873,6.692);
+     way["shop"](7.848,6.675,7.873,6.692);
+     node["office"](7.848,6.675,7.873,6.692);
+     way["office"](7.848,6.675,7.873,6.692);
+     node["leisure"](7.848,6.675,7.873,6.692);
+     way["leisure"](7.848,6.675,7.873,6.692);
+     node["healthcare"](7.848,6.675,7.873,6.692);
+     way["healthcare"](7.848,6.675,7.873,6.692);
+     node["tourism"](7.848,6.675,7.873,6.692);
+     way["highway"~"^(footway|path|pedestrian|steps|service|residential|track|unclassified|living_street)$"](7.848,6.675,7.873,6.692);
+   );
+   out body;
+   >;
+   out skel qt;
+   ```
+
+3. **Export → "raw data"** (not "GeoJSON" — that flattens ways to bare coordinates and loses the OSM node ids that tell us which paths share a junction). Save the download as `Assets/felele-osm-export.json`.
+4. **Convert:** `npm run convert-survey-osm` reads that file and writes staging files `data/osm-places.csv` and `data/osm-network.geojson` (it does not touch the canonical files yet), printing a report of anything it couldn't map cleanly (unrecognized categories, unnamed buildings, path junctions it had to snap defensively). Review the report.
+5. **Merge:** `npm run merge-survey` folds the staging files into the canonical `data/places.csv` and `data/network.geojson`, keeping the existing survey data as the base. It prints a report of: new places added, places it flagged as possible/likely duplicates of existing ones (excluded from auto-merge — resolve these by hand), new path junctions merged into the existing network vs. genuinely new ones, and a connectivity check. **If it reports any place in a component disconnected from School Gate, it exits with an error — fix the path network before continuing.**
+6. Review the duplicate-place and junction-merge entries in the report, hand-editing `data/places.csv` / `data/network.geojson` if a decision needs correcting.
+7. To preserve manual corrections made directly in Supabase (e.g. a `photo_url` set by hand) across future re-runs of this loop, add a row to `data/place-overrides.csv` (`name,photo_url,description_override`) instead — `merge-survey.mjs` re-applies it on every run so it survives reseeding.
+8. Run the quality checklist below, then the existing seed scripts as usual.
+
+Repeat steps 1–8 whenever OSM data is updated.
+
 ## Quality checklist before handing data to the build
 
 - [ ] Every place has a real coordinate, a category from the allowed list, and its common nicknames.

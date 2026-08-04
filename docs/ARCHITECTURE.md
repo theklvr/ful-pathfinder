@@ -7,7 +7,7 @@ Read this before touching the database schema or the routing code.
 We do NOT draw our own base map, and we do NOT rely on someone else for campus detail. We use a **hybrid**:
 
 - **Base layer (free, from others):** the town of Lokoja, roads, rivers, and general geography come from OpenStreetMap, delivered as a Protomaps PMTiles file. We never redraw this.
-- **Campus layer (ours):** every building, footpath, and landmark inside FUL is surveyed by the team and stored in Supabase. This is the data no existing map has, and it is what makes the app useful.
+- **Campus layer (ours):** every building, footpath, and landmark inside FUL is surveyed by the team and stored in Supabase. This is the data no existing map has, and it is what makes the app useful. The team maintains this data directly on openstreetmap.org (the iD editor) going forward, since it's the one part of the source that stays editable by anyone on the team long-term; this merges with, rather than replaces, the original hand-walked GPS survey. See `docs/SURVEY-GUIDE.md` for the OSM export/merge steps.
 - **Routing (ours):** directions run over our own surveyed path graph, not over OSM roads. This is why we can route across footpaths and shortcuts that no other map knows about.
 
 ## Why this stack (so nobody swaps it for a paid one later)

@@ -1,4 +1,5 @@
 import { useSwipeToDismiss } from '../hooks/useSwipeToDismiss';
+import PlaceActions from './PlaceActions';
 
 export default function PlaceCard({ place, onClose, onDirections }) {
   const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
@@ -16,9 +17,7 @@ export default function PlaceCard({ place, onClose, onDirections }) {
         <span className="place-card-category">{place.category}</span>
         <h2 className="place-card-name">{place.name}</h2>
         {place.description && <p className="place-card-description">{place.description}</p>}
-        <button className="place-card-directions" onClick={() => onDirections?.(place)}>
-          Directions
-        </button>
+        <PlaceActions place={place} onDirections={onDirections} />
       </div>
     </div>
   );

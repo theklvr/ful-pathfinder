@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import MapView from './map/MapView';
 import PlaceCard from './components/PlaceCard';
+import PlaceList from './components/PlaceList';
 import CategoryFilter from './components/CategoryFilter';
 import SearchBar from './components/SearchBar';
 import DirectionsPanel from './components/DirectionsPanel';
@@ -39,7 +40,7 @@ export default function App() {
   const [places, setPlaces] = useState([]);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [activeCategories, setActiveCategories] = useState(() => new Set(CATEGORIES.map((c) => c.id)));
+  const [activeCategory, setActiveCategory] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [originPlace, setOriginPlace] = useState(null);
   const [destinationPlace, setDestinationPlace] = useState(null);
@@ -48,11 +49,14 @@ export default function App() {
   const [arrived, setArrived] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [dataError, setDataError] = useState(null);
+  const [meActive, setMeActive] = useState(false);
+  const [showAccountNotice, setShowAccountNotice] = useState(false);
   const mapRef = useRef(null);
   const lastSpokenRef = useRef('');
   const arrivalTimerRef = useRef(null);
+  const meFlyToDoneRef = useRef(false);
 
-  const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(navigating);
+  const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(navigating || meActive);
 
   function loadData() {
     setDataLoading(true);
@@ -91,10 +95,37 @@ export default function App() {
     }
   }, [navigating, locationStatus]);
 
+  // Same idea for the "Me" recenter button.
+  useEffect(() => {
+    if (meActive && (locationStatus === 'denied' || locationStatus === 'unavailable')) {
+      setMeActive(false);
+    }
+  }, [meActive, locationStatus]);
+
+  // Jump the camera to the user's position once per "Me" activation, not on
+  // every GPS tick — continuous re-centering would fight the user panning
+  // around, unlike live-nav mode where following the walker is the point.
+  useEffect(() => {
+    if (!meActive) {
+      meFlyToDoneRef.current = false;
+      return;
+    }
+    if (userPosition && !meFlyToDoneRef.current) {
+      mapRef.current?.flyTo(userPosition);
+      meFlyToDoneRef.current = true;
+    }
+  }, [meActive, userPosition]);
+
   const filteredPlaces = useMemo(() => {
     if (navigating) return destinationPlace ? [destinationPlace] : [];
-    return places.filter((p) => activeCategories.has(p.category));
-  }, [places, activeCategories, navigating, destinationPlace]);
+    if (activeCategory) return places.filter((p) => p.category === activeCategory);
+    return places;
+  }, [places, activeCategory, navigating, destinationPlace]);
+
+  const categoryListPlaces = useMemo(() => {
+    if (!activeCategory) return [];
+    return places.filter((p) => p.category === activeCategory);
+  }, [places, activeCategory]);
 
   const routingGraph = useMemo(() => {
     if (nodes.length === 0 || edges.length === 0) return null;
@@ -168,13 +199,8 @@ export default function App() {
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(currentStep.text));
   }, [navigating, voiceEnabled, currentStep]);
 
-  function toggleCategory(id) {
-    setActiveCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  function selectCategory(id) {
+    setActiveCategory((prev) => (prev === id ? null : id));
   }
 
   function handleSelectPlace(place) {
@@ -191,11 +217,16 @@ export default function App() {
 
   function handleStartNavigation() {
     lastSpokenRef.current = '';
+    setMeActive(false);
     setNavigating(true);
   }
 
   function handleEndNavigation() {
     setNavigating(false);
+  }
+
+  function handleToggleMe() {
+    setMeActive((v) => !v);
   }
 
   const navBannerStatusMessage = arrived
@@ -214,10 +245,12 @@ export default function App() {
         nodes={nodes}
         edges={edges}
         route={navigating ? liveRoute?.coordinates : staticRoute?.coordinates}
-        userPosition={navigating ? userPosition : null}
+        userPosition={navigating || meActive ? userPosition : null}
         navigating={navigating}
+        meActive={meActive}
         onPlaceClick={handleSelectPlace}
         onUserPositionDrag={overridePosition}
+        onToggleMe={handleToggleMe}
       />
 
       {dataLoading && places.length === 0 && !dataError && <LoadingScreen />}
@@ -243,9 +276,30 @@ export default function App() {
         <>
           <div className="top-overlay">
             {dataError && <ErrorBanner message={dataError} onRetry={loadData} />}
-            <SearchBar places={places} onSelect={handleSelectPlace} />
+            <div className="search-row">
+              <SearchBar places={places} onSelect={handleSelectPlace} />
+              <button
+                type="button"
+                className="account-button"
+                aria-label="Account"
+                onClick={() => setShowAccountNotice((v) => !v)}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>
+              </button>
+            </div>
+            {showAccountNotice && (
+              <div className="account-notice">
+                Accounts are coming soon.
+                <button type="button" onClick={() => setShowAccountNotice(false)} aria-label="Dismiss">
+                  ×
+                </button>
+              </div>
+            )}
             <div className="category-filter-wrap">
-              <CategoryFilter activeCategories={activeCategories} onToggle={toggleCategory} />
+              <CategoryFilter activeCategory={activeCategory} onSelect={selectCategory} />
             </div>
           </div>
           {destinationPlace ? (
@@ -260,9 +314,17 @@ export default function App() {
               onStartNavigation={handleStartNavigation}
               locationStatus={locationStatus}
             />
-          ) : (
+          ) : selectedPlace ? (
             <PlaceCard place={selectedPlace} onClose={() => setSelectedPlace(null)} onDirections={handleStartDirections} />
-          )}
+          ) : activeCategory ? (
+            <PlaceList
+              places={categoryListPlaces}
+              categoryLabel={CATEGORIES.find((c) => c.id === activeCategory)?.label ?? activeCategory}
+              onSelectPlace={handleSelectPlace}
+              onDirections={handleStartDirections}
+              onClose={() => setActiveCategory(null)}
+            />
+          ) : null}
         </>
       )}
     </>

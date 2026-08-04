@@ -27,7 +27,7 @@ const PLACE_ZOOM = 18;
 const NAV_ZOOM = 18.5;
 
 const MapView = forwardRef(function MapView(
-  { places, nodes = [], edges = [], route, userPosition, navigating = false, onPlaceClick, onUserPositionDrag },
+  { places, nodes = [], edges = [], route, userPosition, navigating = false, meActive = false, onPlaceClick, onUserPositionDrag, onToggleMe },
   ref,
 ) {
   const containerRef = useRef(null);
@@ -86,6 +86,44 @@ const MapView = forwardRef(function MapView(
     map.once('style.load', () => setStyleVersion((v) => v + 1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flavor]);
+
+  // Campus building footprints, drawn ourselves straight from the team's OSM
+  // survey export (scripts/convert-survey-osm.mjs -> public/map/campus-
+  // buildings.geojson). The basemap tile file predates that survey and
+  // Protomaps' builds lag live OSM by days, so the buildings would otherwise
+  // be invisible on the map for a long time regardless of how much gets
+  // traced -- this shows them immediately instead of waiting.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded || map.getSource('campus-buildings')) return;
+
+    fetch('/map/campus-buildings.geojson')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data || !map.getSource || map.getSource('campus-buildings')) return;
+        const before = map.getLayer('network-debug-casing') ? 'network-debug-casing' : undefined;
+        map.addSource('campus-buildings', { type: 'geojson', data });
+        map.addLayer(
+          {
+            id: 'campus-buildings-fill',
+            type: 'fill',
+            source: 'campus-buildings',
+            paint: { 'fill-color': '#c9c2b6', 'fill-opacity': 0.85 },
+          },
+          before,
+        );
+        map.addLayer(
+          {
+            id: 'campus-buildings-outline',
+            type: 'line',
+            source: 'campus-buildings',
+            paint: { 'line-color': '#a89f8f', 'line-width': 1 },
+          },
+          before,
+        );
+      })
+      .catch(() => {});
+  }, [mapLoaded, styleVersion]);
 
   // The surveyed path network, drawn as real walking paths (docs/ROADMAP.md
   // Day 7) -- a light casing plus a dashed amber line, echoing the crest's
@@ -209,15 +247,25 @@ const MapView = forwardRef(function MapView(
 
     for (const place of places) {
       if (markersRef.current.has(place.id)) continue;
-      const el = document.createElement('div');
-      el.className = 'place-marker';
-      el.style.backgroundColor = CATEGORY_COLOR[place.category] ?? DEFAULT_MARKER_COLOR;
-      el.innerHTML = `<svg class="place-marker-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${CATEGORY_ICON_PATH[place.category] ?? DEFAULT_ICON_PATH}</svg>`;
-      el.addEventListener('click', (e) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'place-marker-wrap';
+
+      const pin = document.createElement('div');
+      pin.className = 'place-marker';
+      pin.style.backgroundColor = CATEGORY_COLOR[place.category] ?? DEFAULT_MARKER_COLOR;
+      pin.innerHTML = `<svg class="place-marker-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${CATEGORY_ICON_PATH[place.category] ?? DEFAULT_ICON_PATH}</svg>`;
+
+      const label = document.createElement('span');
+      label.className = 'place-marker-label';
+      label.textContent = place.name;
+
+      wrap.appendChild(pin);
+      wrap.appendChild(label);
+      wrap.addEventListener('click', (e) => {
         e.stopPropagation();
         onPlaceClick?.(place);
       });
-      const marker = new Marker({ element: el, anchor: 'bottom' }).setLngLat([place.lng, place.lat]).addTo(map);
+      const marker = new Marker({ element: wrap, anchor: 'bottom' }).setLngLat([place.lng, place.lat]).addTo(map);
       markersRef.current.set(place.id, marker);
     }
   }, [places, onPlaceClick]);
@@ -265,6 +313,18 @@ const MapView = forwardRef(function MapView(
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
+      <button
+        type="button"
+        className="me-button"
+        data-active={meActive}
+        aria-label={meActive ? 'Stop showing my location' : 'Show my location'}
+        onClick={onToggleMe}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+        </svg>
+      </button>
       <button
         type="button"
         className="map-style-toggle"
