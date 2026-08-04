@@ -11,6 +11,7 @@
     "convert-survey": "node scripts/convert-survey-kml.mjs",
     "convert-survey-osm": "node scripts/convert-survey-osm.mjs",
     "merge-survey": "node scripts/merge-survey.mjs",
+    "promote-submissions": "node supabase/seed/promote_submissions.mjs",
     "test": "node --test src/routing/*.test.js"
   },
   "dependencies": {

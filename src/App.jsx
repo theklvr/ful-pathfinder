@@ -3,6 +3,7 @@ import MapView from './map/MapView';
 import PlaceCard from './components/PlaceCard';
 import PlaceList from './components/PlaceList';
 import AccountPanel from './components/AccountPanel';
+import SubmitPlaceForm from './components/SubmitPlaceForm';
 import CategoryFilter from './components/CategoryFilter';
 import SearchBar from './components/SearchBar';
 import DirectionsPanel from './components/DirectionsPanel';
@@ -56,6 +57,8 @@ export default function App() {
   const [meActive, setMeActive] = useState(false);
   const [showAccountPanel, setShowAccountPanel] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const [addPlaceMode, setAddPlaceMode] = useState(false);
+  const [newPlaceLocation, setNewPlaceLocation] = useState(null);
   const auth = useAuth();
   const mapRef = useRef(null);
   const lastSpokenRef = useRef('');
@@ -262,6 +265,22 @@ export default function App() {
     setShowAccountPanel(true);
   }
 
+  function handleStartAddPlace() {
+    if (!auth.user) {
+      handleRequireSignIn();
+      return;
+    }
+    setSelectedPlace(null);
+    setShowDirections(false);
+    setActiveCategory(null);
+    setAddPlaceMode((v) => !v);
+  }
+
+  function handleMapClickForNewPlace(latLng) {
+    setAddPlaceMode(false);
+    setNewPlaceLocation(latLng);
+  }
+
   async function handleToggleFavorite(place) {
     if (!auth.user) {
       handleRequireSignIn();
@@ -305,6 +324,9 @@ export default function App() {
         onUserPositionDrag={overridePosition}
         onToggleMe={handleToggleMe}
         onOpenDirections={handleOpenDirections}
+        addPlaceMode={addPlaceMode}
+        onStartAddPlace={handleStartAddPlace}
+        onMapClickForNewPlace={handleMapClickForNewPlace}
       />
 
       {dataLoading && places.length === 0 && !dataError && <LoadingScreen />}
@@ -363,6 +385,14 @@ export default function App() {
               steps={staticSteps}
               onStartNavigation={handleStartNavigation}
               locationStatus={locationStatus}
+            />
+          ) : newPlaceLocation ? (
+            <SubmitPlaceForm
+              lat={newPlaceLocation.lat}
+              lng={newPlaceLocation.lng}
+              user={auth.user}
+              onClose={() => setNewPlaceLocation(null)}
+              onSubmitted={() => {}}
             />
           ) : selectedPlace ? (
             <PlaceCard

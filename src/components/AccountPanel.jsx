@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { fetchMySubmissions } from '../data/submissions';
 
 export default function AccountPanel({ auth, onClose }) {
   const [mode, setMode] = useState('signin');
@@ -7,11 +8,32 @@ export default function AccountPanel({ auth, onClose }) {
   const [error, setError] = useState(null);
   const [info, setInfo] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [mySubmissions, setMySubmissions] = useState([]);
+
+  useEffect(() => {
+    if (!auth.user) return;
+    fetchMySubmissions(auth.user.id)
+      .then(setMySubmissions)
+      .catch(() => {});
+  }, [auth.user]);
 
   if (auth.user) {
     return (
       <div className="account-panel">
         <p className="account-panel-email">Signed in as {auth.user.email}</p>
+        {mySubmissions.length > 0 && (
+          <div className="account-submissions">
+            <span className="directions-label">Your submitted places</span>
+            <ul>
+              {mySubmissions.map((s) => (
+                <li key={s.id}>
+                  <span>{s.name}</span>
+                  <span className={`submission-status submission-status-${s.status}`}>{s.status}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <button type="button" className="account-panel-submit" onClick={() => auth.signOut()}>
           Sign out
         </button>

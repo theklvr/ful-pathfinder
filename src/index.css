@@ -84,7 +84,8 @@ body {
 
 .map-style-toggle,
 .me-button,
-.directions-fab {
+.directions-fab,
+.add-place-fab {
   position: absolute;
   right: 12px;
   z-index: 10;
@@ -122,7 +123,8 @@ body {
 
 .map-style-toggle svg,
 .me-button svg,
-.directions-fab svg {
+.directions-fab svg,
+.add-place-fab svg {
   width: 20px;
   height: 20px;
 }
@@ -398,6 +400,112 @@ body {
   font-size: 12px;
   font-weight: 600;
   color: #b45309;
+}
+
+.add-place-fab {
+  top: 256px;
+}
+
+.add-place-fab[data-active='true'] {
+  background: var(--confluence);
+  color: white;
+}
+
+.add-place-hint {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 60px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--navy);
+  color: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(11, 37, 69, 0.3);
+}
+
+.add-place-hint button {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submit-place-form .place-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.submit-place-coords {
+  margin: -4px 0 4px;
+  font-size: 12px;
+  color: #64748b;
+  font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Consolas, monospace;
+}
+
+.submit-place-done {
+  margin: 4px 0 16px;
+  font-size: 15px;
+  color: var(--navy);
+  line-height: 1.5;
+}
+
+.account-submissions {
+  margin: 4px 0;
+}
+
+.account-submissions ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-submissions li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+.submission-status {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.submission-status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.submission-status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.submission-status-rejected {
+  background: #fde8e8;
+  color: #b42318;
 }
 
 /* Icon-over-label action row (Directions/Call/Share/More), Google-Maps

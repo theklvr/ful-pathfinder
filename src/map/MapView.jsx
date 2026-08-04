@@ -39,6 +39,9 @@ const MapView = forwardRef(function MapView(
     onUserPositionDrag,
     onToggleMe,
     onOpenDirections,
+    addPlaceMode = false,
+    onMapClickForNewPlace,
+    onStartAddPlace,
   },
   ref,
 ) {
@@ -49,6 +52,14 @@ const MapView = forwardRef(function MapView(
   const [mapLoaded, setMapLoaded] = useState(false);
   const [styleVersion, setStyleVersion] = useState(0);
   const [flavor, setFlavor] = useState('light');
+  const [mapTypeMenuOpen, setMapTypeMenuOpen] = useState(false);
+  const addPlaceModeRef = useRef(addPlaceMode);
+  const onMapClickForNewPlaceRef = useRef(onMapClickForNewPlace);
+
+  useEffect(() => {
+    addPlaceModeRef.current = addPlaceMode;
+    onMapClickForNewPlaceRef.current = onMapClickForNewPlace;
+  }, [addPlaceMode, onMapClickForNewPlace]);
 
   useImperativeHandle(ref, () => ({
     flyTo(place) {
@@ -68,6 +79,15 @@ const MapView = forwardRef(function MapView(
     mapRef.current.on('load', () => {
       setMapLoaded(true);
       setStyleVersion((v) => v + 1);
+    });
+
+    // Add-a-place mode: the next raw map click (not a marker, those stop
+    // propagation on their own click handler) drops the pin there. Reads
+    // through refs rather than closing over props, since this listener is
+    // only ever attached once for the map instance's lifetime.
+    mapRef.current.on('click', (e) => {
+      if (!addPlaceModeRef.current) return;
+      onMapClickForNewPlaceRef.current?.({ lat: e.lngLat.lat, lng: e.lngLat.lng });
     });
 
     // Exposed for debugging via the browser console or CDP — the previous
@@ -114,13 +134,17 @@ const MapView = forwardRef(function MapView(
       .then((data) => {
         if (!data || !map.getSource || map.getSource('campus-buildings')) return;
         const before = map.getLayer('network-debug-casing') ? 'network-debug-casing' : undefined;
+        // Over satellite imagery a solid fill would just hide the photo
+        // underneath it -- keep it as a faint tint with a brighter outline
+        // instead, so real building shapes stay visible either way.
+        const isSatellite = flavor === 'satellite';
         map.addSource('campus-buildings', { type: 'geojson', data });
         map.addLayer(
           {
             id: 'campus-buildings-fill',
             type: 'fill',
             source: 'campus-buildings',
-            paint: { 'fill-color': '#c9c2b6', 'fill-opacity': 0.85 },
+            paint: { 'fill-color': '#c9c2b6', 'fill-opacity': isSatellite ? 0.12 : 0.85 },
           },
           before,
         );
@@ -129,13 +153,13 @@ const MapView = forwardRef(function MapView(
             id: 'campus-buildings-outline',
             type: 'line',
             source: 'campus-buildings',
-            paint: { 'line-color': '#a89f8f', 'line-width': 1 },
+            paint: { 'line-color': isSatellite ? '#ffffff' : '#a89f8f', 'line-width': isSatellite ? 1.5 : 1 },
           },
           before,
         );
       })
       .catch(() => {});
-  }, [mapLoaded, styleVersion]);
+  }, [mapLoaded, styleVersion, flavor]);
 
   // The surveyed path network, drawn as real walking paths (docs/ROADMAP.md
   // Day 7) -- a light casing plus a dashed amber line, echoing the crest's
@@ -315,6 +339,12 @@ const MapView = forwardRef(function MapView(
     if (cone && userPosition.heading != null) cone.style.transform = `rotate(${userPosition.heading}deg)`;
   }, [userPosition, onUserPositionDrag]);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.getCanvas().style.cursor = addPlaceMode ? 'crosshair' : '';
+  }, [addPlaceMode]);
+
   // Camera follows the walker while navigating, like a real turn-by-turn app.
   useEffect(() => {
     const map = mapRef.current;
@@ -344,28 +374,59 @@ const MapView = forwardRef(function MapView(
       </button>
       <button
         type="button"
-        className="map-style-toggle"
-        aria-label={flavor === 'light' ? 'Switch to dark map' : 'Switch to light map'}
-        onClick={() => setFlavor((f) => (f === 'light' ? 'dark' : 'light'))}
+        className="add-place-fab"
+        data-active={addPlaceMode}
+        aria-label="Add a place"
+        onClick={onStartAddPlace}
       >
-        {flavor === 'light' ? (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
-            <line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
-            <line x1="1" y1="12" x2="3" y2="12" />
-            <line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
-            <line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
-          </svg>
-        )}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
       </button>
+      {addPlaceMode && (
+        <div className="add-place-hint">
+          Tap the map to place your pin
+          <button type="button" onClick={onStartAddPlace} aria-label="Cancel">
+            Cancel
+          </button>
+        </div>
+      )}
+      <div className="map-type-wrap">
+        <button
+          type="button"
+          className="map-style-toggle"
+          aria-label="Map type"
+          onClick={() => setMapTypeMenuOpen((v) => !v)}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
+          </svg>
+        </button>
+        {mapTypeMenuOpen && (
+          <div className="map-type-menu">
+            {[
+              { id: 'light', label: 'Default' },
+              { id: 'dark', label: 'Dark' },
+              { id: 'satellite', label: 'Satellite' },
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                data-active={flavor === opt.id}
+                onClick={() => {
+                  setFlavor(opt.id);
+                  setMapTypeMenuOpen(false);
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 });
