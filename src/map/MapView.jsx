@@ -55,11 +55,18 @@ const MapView = forwardRef(function MapView(
   const [mapTypeMenuOpen, setMapTypeMenuOpen] = useState(false);
   const addPlaceModeRef = useRef(addPlaceMode);
   const onMapClickForNewPlaceRef = useRef(onMapClickForNewPlace);
+  const flavorRef = useRef(flavor);
+  const initialFlavorRef = useRef(flavor);
+  const hasHandledInitialLoadRef = useRef(false);
 
   useEffect(() => {
     addPlaceModeRef.current = addPlaceMode;
     onMapClickForNewPlaceRef.current = onMapClickForNewPlace;
   }, [addPlaceMode, onMapClickForNewPlace]);
+
+  useEffect(() => {
+    flavorRef.current = flavor;
+  }, [flavor]);
 
   useImperativeHandle(ref, () => ({
     flyTo(place) {
@@ -109,15 +116,35 @@ const MapView = forwardRef(function MapView(
   // to make the effects below re-add the path network and route line.
   useEffect(() => {
     const map = mapRef.current;
+    // mapLoaded is a dependency, not just a guard -- without it, a style
+    // change requested before the map's first 'load' event (e.g. tapping
+    // the map-type button within the first ~second) would bail out here and
+    // never retry, silently stranding the map on the old style forever
+    // (this effect only re-fires when one of its deps actually changes, and
+    // `flavor` wouldn't change again just because the click didn't "take").
     if (!map || !mapLoaded) return;
+
+    if (!hasHandledInitialLoadRef.current) {
+      hasHandledInitialLoadRef.current = true;
+      if (flavor === initialFlavorRef.current) {
+        // The map was already constructed with buildStyle(flavor) at this
+        // exact value (see the mount effect above) -- reapplying it the
+        // instant 'load' fires would be a pointless teardown/rebuild, and
+        // exactly the kind of redundant setStyle call that was racing with
+        // the buildings-fetch effect below. Only fall through to actually
+        // apply a style here if the user changed flavor before the map had
+        // even finished its first load.
+        return;
+      }
+    }
+
     // diff:false forces a full teardown/rebuild instead of MapLibre's
     // default style-diffing. With custom layers (route, network-debug)
     // already present, the diff path was silently stalling and never
     // firing style.load, leaving those layers gone until reload.
     map.setStyle(buildStyle(flavor), { diff: false });
     map.once('style.load', () => setStyleVersion((v) => v + 1));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flavor]);
+  }, [flavor, mapLoaded]);
 
   // Campus building footprints, drawn ourselves straight from the team's OSM
   // survey export (scripts/convert-survey-osm.mjs -> public/map/campus-
@@ -133,33 +160,61 @@ const MapView = forwardRef(function MapView(
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!data || !map.getSource || map.getSource('campus-buildings')) return;
-        const before = map.getLayer('network-debug-casing') ? 'network-debug-casing' : undefined;
-        // Over satellite imagery a solid fill would just hide the photo
-        // underneath it -- keep it as a faint tint with a brighter outline
-        // instead, so real building shapes stay visible either way.
-        const isSatellite = flavor === 'satellite';
-        map.addSource('campus-buildings', { type: 'geojson', data });
-        map.addLayer(
-          {
-            id: 'campus-buildings-fill',
-            type: 'fill',
-            source: 'campus-buildings',
-            paint: { 'fill-color': '#c9c2b6', 'fill-opacity': isSatellite ? 0.12 : 0.85 },
-          },
-          before,
-        );
-        map.addLayer(
-          {
-            id: 'campus-buildings-outline',
-            type: 'line',
-            source: 'campus-buildings',
-            paint: { 'line-color': isSatellite ? '#ffffff' : '#a89f8f', 'line-width': isSatellite ? 1.5 : 1 },
-          },
-          before,
-        );
+        // The fetch above is async, and a style swap (light/dark/satellite)
+        // can land in that same window -- addSource() throws "Style is not
+        // done loading" if the map's *current* style isn't actually ready
+        // yet, even though the mapLoaded/styleVersion gate above passed when
+        // this effect started. Check readiness again right here, and defer
+        // to 'idle' (fires once the style and all its sources have settled)
+        // rather than assuming nothing changed while the fetch was in flight.
+        // isStyleLoaded() is checked below, but it isn't a hard guarantee --
+        // MapLibre can still reject addSource() with "Style is not done
+        // loading" in a narrow window even when it reported true. Rather
+        // than chase that internal timing exactly, catch the failure and
+        // retry on the next 'idle' (fires once the style and every source
+        // has genuinely settled), which converges correctly regardless.
+        const addBuildingLayers = () => {
+          if (!map.getSource || map.getSource('campus-buildings')) return;
+          try {
+            const before = map.getLayer('network-debug-casing') ? 'network-debug-casing' : undefined;
+            // Over satellite imagery a solid fill would just hide the photo
+            // underneath it -- keep it as a faint tint with a brighter
+            // outline instead, so real building shapes stay visible either
+            // way. Reads flavor via a ref since this can fire well after the
+            // effect that captured it started, on whatever style is current.
+            const isSatellite = flavorRef.current === 'satellite';
+            map.addSource('campus-buildings', { type: 'geojson', data });
+            map.addLayer(
+              {
+                id: 'campus-buildings-fill',
+                type: 'fill',
+                source: 'campus-buildings',
+                paint: { 'fill-color': '#c9c2b6', 'fill-opacity': isSatellite ? 0.12 : 0.85 },
+              },
+              before,
+            );
+            map.addLayer(
+              {
+                id: 'campus-buildings-outline',
+                type: 'line',
+                source: 'campus-buildings',
+                paint: { 'line-color': isSatellite ? '#ffffff' : '#a89f8f', 'line-width': isSatellite ? 1.5 : 1 },
+              },
+              before,
+            );
+          } catch {
+            map.once('idle', addBuildingLayers);
+          }
+        };
+
+        if (map.isStyleLoaded()) {
+          addBuildingLayers();
+        } else {
+          map.once('idle', addBuildingLayers);
+        }
       })
       .catch(() => {});
-  }, [mapLoaded, styleVersion, flavor]);
+  }, [mapLoaded, styleVersion]);
 
   // The surveyed path network, drawn as real walking paths (docs/ROADMAP.md
   // Day 7) -- a light casing plus a dashed amber line, echoing the crest's

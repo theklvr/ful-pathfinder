@@ -112,8 +112,46 @@ body {
   color: white;
 }
 
+.map-type-wrap {
+  position: relative;
+}
+
 .map-style-toggle {
   top: 204px;
+}
+
+.map-type-menu {
+  position: absolute;
+  top: 204px;
+  right: 52px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 130px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.28);
+  overflow: hidden;
+}
+
+.map-type-menu button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 13.5px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.map-type-menu button:hover {
+  background: #f1f5f9;
+}
+
+.map-type-menu button[data-active='true'] {
+  color: var(--navy);
+  font-weight: 700;
 }
 
 .me-button[data-active='true'] {
