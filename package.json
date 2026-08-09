@@ -12,6 +12,7 @@
     "convert-survey-osm": "node scripts/convert-survey-osm.mjs",
     "merge-survey": "node scripts/merge-survey.mjs",
     "promote-submissions": "node supabase/seed/promote_submissions.mjs",
+    "prepare-photos": "node scripts/prepare-photos.mjs",
     "test": "node --test src/routing/*.test.js"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
     "oxlint": "^1.71.0",
+    "sharp": "^0.35.3",
     "vite": "^7.3.6"
   }
 }

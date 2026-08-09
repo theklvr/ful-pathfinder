@@ -2003,6 +2003,15 @@ body {
   cursor: pointer;
 }
 
+/* MapLibre's own scale control (added in MapView.jsx) defaults to sitting
+   right at the very bottom-left corner, which the bottom nav bar below now
+   covers entirely -- !important because maplibre-gl.css's own load order
+   relative to this file isn't guaranteed by the bundler, so specificity
+   alone can't be trusted to win here. */
+.maplibregl-ctrl-bottom-left {
+  bottom: var(--bottom-nav-height) !important;
+}
+
 /* Explore / You / Contribute bottom tab bar -- Google-Maps-style, hidden
    during live navigation (NavBottomBar owns that screen region then). */
 .bottom-nav {

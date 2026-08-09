@@ -63,4 +63,4 @@ pmtiles extract https://build.protomaps.com/<YYYYMMDD>.pmtiles public/map/felele
 ```
 Re-run with a newer date or a wider bbox if the region needs to grow.
 
-Deployed via Vercel git integration (KLVR team) from github.com/theklvr/ful-pathfinder, branch `main` — every push to `main` auto-deploys. Live at https://ful-pathfinder-klvr.vercel.app (as of Day 14, blocked behind Vercel's Deployment Protection/SSO until that's turned off in project settings — see PROGRESS.md). Env vars (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) are set directly in the Vercel project, matching `.env`.
+Deployed via Vercel git integration (KLVR team) from github.com/theklvr/ful-pathfinder, branch `main` — every push to `main` auto-deploys. Live at https://ful-pathfinder.vercel.app (corrected 2026-08-10; earlier docs said `ful-pathfinder-klvr.vercel.app` — confirm this is still current if it drifts again). Env vars (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) are set directly in the Vercel project, matching `.env`.
