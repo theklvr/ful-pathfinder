@@ -3,6 +3,30 @@ import { fetchMySubmissions } from '../data/submissions';
 import { upsertProfile } from '../data/profiles';
 import SettingsPanel from './SettingsPanel';
 
+function PageHeader({ title, onSettings, onClose }) {
+  return (
+    <div className="account-page-header">
+      <h2 className="account-page-title">{title}</h2>
+      <div className="account-page-header-actions">
+        {onSettings && (
+          <button type="button" className="account-page-icon-button" aria-label="Settings" onClick={onSettings}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </button>
+        )}
+        <button type="button" className="account-page-icon-button" aria-label="Close" onClick={onClose}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AccountPanel({ auth, profile, onProfileChange, onStartAddPlace, settings, onUpdateSettings, onClose }) {
   const [showSettings, setShowSettings] = useState(false);
   const [mode, setMode] = useState('signin');
@@ -44,18 +68,18 @@ export default function AccountPanel({ auth, profile, onProfileChange, onStartAd
   }
 
   if (showSettings) {
-    return <SettingsPanel settings={settings} onUpdateSettings={onUpdateSettings} onBack={() => setShowSettings(false)} />;
+    return (
+      <div className="account-page">
+        <PageHeader title="Settings" onClose={() => setShowSettings(false)} />
+        <SettingsPanel settings={settings} onUpdateSettings={onUpdateSettings} onBack={() => setShowSettings(false)} bare />
+      </div>
+    );
   }
 
   if (auth.user) {
     return (
-      <div className="account-panel">
-        <button type="button" className="account-settings-button" aria-label="Settings" onClick={() => setShowSettings(true)}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
-        </button>
+      <div className="account-page">
+        <PageHeader title="Profile" onSettings={() => setShowSettings(true)} onClose={onClose} />
         <div className="account-profile">
           {profile?.avatar_url ? (
             <img className="account-avatar" src={profile.avatar_url} alt="" />
@@ -165,21 +189,8 @@ export default function AccountPanel({ auth, profile, onProfileChange, onStartAd
   }
 
   return (
-    <form className="account-panel" onSubmit={handleSubmit}>
-      <button
-        type="button"
-        className="account-settings-button"
-        aria-label="Settings"
-        onClick={(e) => {
-          e.preventDefault();
-          setShowSettings(true);
-        }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-      </button>
+    <form className="account-page" onSubmit={handleSubmit}>
+      <PageHeader title="Sign in" onSettings={() => setShowSettings(true)} onClose={onClose} />
       <button type="button" className="account-google-button" onClick={handleGoogleSignIn}>
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <path

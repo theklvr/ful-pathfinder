@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { CATEGORY_COLOR, DEFAULT_MARKER_COLOR } from '../data/categories';
 import { CATEGORY_ICON_PATH, DEFAULT_ICON_PATH } from '../data/categoryIcons';
 import { fetchRatingSummaries } from '../data/reviews';
+import { useSwipeToDismiss } from '../hooks/useSwipeToDismiss';
 import PlaceActions from './PlaceActions';
 
 export default function PlaceList({ places, categoryLabel, onSelectPlace, onDirections, onClose }) {
   const [ratings, setRatings] = useState(new Map());
+  const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
 
   useEffect(() => {
     let cancelled = false;
@@ -20,7 +22,8 @@ export default function PlaceList({ places, categoryLabel, onSelectPlace, onDire
   }, [places]);
 
   return (
-    <div className="place-list">
+    <div className="place-list" ref={sheetRef}>
+      <div className="sheet-handle" {...handleProps} />
       <div className="place-list-header">
         <h2 className="place-list-title">
           {categoryLabel} <span className="place-list-count">({places.length})</span>

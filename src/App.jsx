@@ -77,7 +77,7 @@ export default function App() {
 
   const originIsLiveLocation = originPlace?.isLiveLocation ?? false;
   const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(
-    navigating || meActive || originIsLiveLocation,
+    navigating || meActive || originIsLiveLocation || addPlaceMode,
   );
 
   function loadData() {
@@ -348,11 +348,12 @@ export default function App() {
         nodes={nodes}
         edges={edges}
         route={navigating ? liveRoute?.coordinates : staticRoute?.coordinates}
-        userPosition={navigating || meActive ? userPosition : null}
+        userPosition={navigating || meActive || addPlaceMode ? userPosition : null}
         navigating={navigating}
         meActive={meActive}
         declutterByZoom={!activeCategory}
         initialFlavor={settings.mapStyle}
+        onUseMyLocationForNewPlace={() => userPosition && handleMapClickForNewPlace(userPosition)}
         onPlaceClick={handleSelectPlace}
         onUserPositionDrag={overridePosition}
         onToggleMe={handleToggleMe}

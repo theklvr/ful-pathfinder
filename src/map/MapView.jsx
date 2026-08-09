@@ -60,6 +60,7 @@ const MapView = forwardRef(function MapView(
     addPlaceMode = false,
     onMapClickForNewPlace,
     onStartAddPlace,
+    onUseMyLocationForNewPlace,
   },
   ref,
 ) {
@@ -508,10 +509,17 @@ const MapView = forwardRef(function MapView(
           </button>
           {addPlaceMode && (
             <div className="add-place-hint">
-              Tap the map to place your pin
-              <button type="button" onClick={onStartAddPlace} aria-label="Cancel">
-                Cancel
-              </button>
+              <span>Tap the map to place your pin</span>
+              <div className="add-place-hint-actions">
+                {userPosition && (
+                  <button type="button" onClick={onUseMyLocationForNewPlace}>
+                    Use my location
+                  </button>
+                )}
+                <button type="button" onClick={onStartAddPlace} aria-label="Cancel">
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
           <div className="map-type-wrap">
@@ -532,6 +540,7 @@ const MapView = forwardRef(function MapView(
                 {[
                   { id: 'light', label: 'Default' },
                   { id: 'dark', label: 'Dark' },
+                  { id: 'grayscale', label: 'Grayscale' },
                   { id: 'satellite', label: 'Satellite' },
                 ].map((opt) => (
                   <button
