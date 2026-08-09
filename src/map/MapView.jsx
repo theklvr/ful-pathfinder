@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Map as MaplibreMap, NavigationControl, Marker, addProtocol, setWorkerUrl } from 'maplibre-gl';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Map as MaplibreMap, NavigationControl, ScaleControl, Marker, addProtocol, setWorkerUrl } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { buildStyle } from './style';
@@ -26,6 +26,22 @@ const FELELE_ZOOM = 15;
 const PLACE_ZOOM = 18;
 const NAV_ZOOM = 18.5;
 
+// No surveyed "importance" field exists yet (docs/SURVEY-GUIDE.md doesn't
+// collect one) -- this is a category-based heuristic so the map isn't a wall
+// of pins when zoomed out: major orientation landmarks show first, smaller
+// amenities only once you're zoomed in close enough to actually walk to one.
+const CATEGORY_MIN_ZOOM = {
+  faculty: 0,
+  admin: 0,
+  hostel: 0,
+  landmark: 0,
+  sport: 15.5,
+  health: 15.5,
+  eatery: 16.5,
+  atm: 16.5,
+  service: 16.5,
+};
+
 const MapView = forwardRef(function MapView(
   {
     places,
@@ -35,6 +51,7 @@ const MapView = forwardRef(function MapView(
     userPosition,
     navigating = false,
     meActive = false,
+    declutterByZoom = true,
     onPlaceClick,
     onUserPositionDrag,
     onToggleMe,
@@ -50,14 +67,17 @@ const MapView = forwardRef(function MapView(
   const markersRef = useRef(new Map());
   const userMarkerRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [zoom, setZoom] = useState(FELELE_ZOOM);
   const [styleVersion, setStyleVersion] = useState(0);
   const [flavor, setFlavor] = useState('light');
   const [mapTypeMenuOpen, setMapTypeMenuOpen] = useState(false);
+  const [following, setFollowing] = useState(true);
   const addPlaceModeRef = useRef(addPlaceMode);
   const onMapClickForNewPlaceRef = useRef(onMapClickForNewPlace);
   const flavorRef = useRef(flavor);
   const initialFlavorRef = useRef(flavor);
   const hasHandledInitialLoadRef = useRef(false);
+  const navigatingRef = useRef(navigating);
 
   useEffect(() => {
     addPlaceModeRef.current = addPlaceMode;
@@ -67,6 +87,13 @@ const MapView = forwardRef(function MapView(
   useEffect(() => {
     flavorRef.current = flavor;
   }, [flavor]);
+
+  useEffect(() => {
+    navigatingRef.current = navigating;
+    // Every fresh "Start navigation" should follow the walker again, even if
+    // a previous session ended with the camera paused from manual panning.
+    if (navigating) setFollowing(true);
+  }, [navigating]);
 
   useImperativeHandle(ref, () => ({
     flyTo(place) {
@@ -83,9 +110,23 @@ const MapView = forwardRef(function MapView(
     });
 
     mapRef.current.addControl(new NavigationControl(), 'top-right');
+    // Live distance-to-pixel reference, updates automatically on zoom --
+    // both units since walkers on campus think in metres, but not everyone
+    // does.
+    mapRef.current.addControl(new ScaleControl({ maxWidth: 100, unit: 'metric' }), 'bottom-left');
+    mapRef.current.addControl(new ScaleControl({ maxWidth: 100, unit: 'imperial' }), 'bottom-left');
+    mapRef.current.on('zoom', () => setZoom(mapRef.current.getZoom()));
     mapRef.current.on('load', () => {
       setMapLoaded(true);
       setStyleVersion((v) => v + 1);
+    });
+
+    // While navigating, the camera follows the walker (see the effect
+    // below) -- but a walker who drags the map to look ahead shouldn't have
+    // it yanked back out from under them. Pause following on manual drag; a
+    // "recenter" button (rendered below) lets them resume it deliberately.
+    mapRef.current.on('dragstart', () => {
+      if (navigatingRef.current) setFollowing(false);
     });
 
     // Add-a-place mode: the next raw map click (not a marker, those stop
@@ -324,11 +365,16 @@ const MapView = forwardRef(function MapView(
     });
   }, [mapLoaded, styleVersion, route]);
 
+  const visiblePlaces = useMemo(() => {
+    if (!declutterByZoom) return places;
+    return places.filter((p) => zoom >= (CATEGORY_MIN_ZOOM[p.category] ?? 0));
+  }, [places, zoom, declutterByZoom]);
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
 
-    const currentIds = new Set(places.map((p) => p.id));
+    const currentIds = new Set(visiblePlaces.map((p) => p.id));
     for (const [id, marker] of markersRef.current) {
       if (!currentIds.has(id)) {
         marker.remove();
@@ -336,7 +382,7 @@ const MapView = forwardRef(function MapView(
       }
     }
 
-    for (const place of places) {
+    for (const place of visiblePlaces) {
       if (markersRef.current.has(place.id)) continue;
       const wrap = document.createElement('div');
       wrap.className = 'place-marker-wrap';
@@ -359,7 +405,7 @@ const MapView = forwardRef(function MapView(
       const marker = new Marker({ element: wrap, anchor: 'bottom' }).setLngLat([place.lng, place.lat]).addTo(map);
       markersRef.current.set(place.id, marker);
     }
-  }, [places, onPlaceClick]);
+  }, [visiblePlaces, onPlaceClick]);
 
   // "You are here" puck: draggable so a walker can correct GPS drift
   // (consumer phone GPS is only accurate to ~5-15m — docs/ARCHITECTURE.md).
@@ -400,88 +446,110 @@ const MapView = forwardRef(function MapView(
     map.getCanvas().style.cursor = addPlaceMode ? 'crosshair' : '';
   }, [addPlaceMode]);
 
-  // Camera follows the walker while navigating, like a real turn-by-turn app.
+  // Camera follows the walker while navigating, like a real turn-by-turn app
+  // -- but only while `following` is true, so a manual drag (see the
+  // `dragstart` listener above) actually sticks instead of snapping back on
+  // the next GPS tick.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !navigating || !userPosition) return;
+    if (!map || !navigating || !userPosition || !following) return;
     map.easeTo({ center: [userPosition.lng, userPosition.lat], zoom: Math.max(map.getZoom(), NAV_ZOOM), duration: 800 });
-  }, [navigating, userPosition]);
+  }, [navigating, userPosition, following]);
+
+  function handleRecenter() {
+    const map = mapRef.current;
+    if (map && userPosition) {
+      map.easeTo({ center: [userPosition.lng, userPosition.lat], zoom: NAV_ZOOM, duration: 500 });
+    }
+    setFollowing(true);
+  }
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
-      <button
-        type="button"
-        className="me-button"
-        data-active={meActive}
-        aria-label={meActive ? 'Stop showing my location' : 'Show my location'}
-        onClick={onToggleMe}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-        </svg>
-      </button>
-      <button type="button" className="directions-fab" aria-label="Directions" onClick={onOpenDirections}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 11l18-8-8 18-2-8-8-2z" />
-        </svg>
-      </button>
-      <button
-        type="button"
-        className="add-place-fab"
-        data-active={addPlaceMode}
-        aria-label="Add a place"
-        onClick={onStartAddPlace}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-      </button>
-      {addPlaceMode && (
-        <div className="add-place-hint">
-          Tap the map to place your pin
-          <button type="button" onClick={onStartAddPlace} aria-label="Cancel">
-            Cancel
-          </button>
-        </div>
-      )}
-      <div className="map-type-wrap">
-        <button
-          type="button"
-          className="map-style-toggle"
-          aria-label="Map type"
-          onClick={() => setMapTypeMenuOpen((v) => !v)}
-        >
+      {navigating && !following && (
+        <button type="button" className="recenter-button" aria-label="Re-center on my location" onClick={handleRecenter}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
+            <polygon points="3 11 22 2 13 21 11 13 3 11" />
           </svg>
         </button>
-        {mapTypeMenuOpen && (
-          <div className="map-type-menu">
-            {[
-              { id: 'light', label: 'Default' },
-              { id: 'dark', label: 'Dark' },
-              { id: 'satellite', label: 'Satellite' },
-            ].map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                data-active={flavor === opt.id}
-                onClick={() => {
-                  setFlavor(opt.id);
-                  setMapTypeMenuOpen(false);
-                }}
-              >
-                {opt.label}
+      )}
+      {!navigating && (
+        <>
+          <button
+            type="button"
+            className="me-button"
+            data-active={meActive}
+            aria-label={meActive ? 'Stop showing my location' : 'Show my location'}
+            onClick={onToggleMe}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+            </svg>
+          </button>
+          <button type="button" className="directions-fab" aria-label="Directions" onClick={onOpenDirections}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 11l18-8-8 18-2-8-8-2z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="add-place-fab"
+            data-active={addPlaceMode}
+            aria-label="Add a place"
+            onClick={onStartAddPlace}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </button>
+          {addPlaceMode && (
+            <div className="add-place-hint">
+              Tap the map to place your pin
+              <button type="button" onClick={onStartAddPlace} aria-label="Cancel">
+                Cancel
               </button>
-            ))}
+            </div>
+          )}
+          <div className="map-type-wrap">
+            <button
+              type="button"
+              className="map-style-toggle"
+              aria-label="Map type"
+              onClick={() => setMapTypeMenuOpen((v) => !v)}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+            </button>
+            {mapTypeMenuOpen && (
+              <div className="map-type-menu">
+                {[
+                  { id: 'light', label: 'Default' },
+                  { id: 'dark', label: 'Dark' },
+                  { id: 'satellite', label: 'Satellite' },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    data-active={flavor === opt.id}
+                    onClick={() => {
+                      setFlavor(opt.id);
+                      setMapTypeMenuOpen(false);
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 });

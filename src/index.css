@@ -39,26 +39,26 @@ body {
 
 .place-marker-wrap {
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
 }
 
 .place-marker {
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
-  border: 2px solid white;
+  border: 1.5px solid white;
   box-shadow: 0 2px 5px rgba(11, 37, 69, 0.45);
 }
 
 .place-marker-icon {
-  width: 16px;
-  height: 16px;
+  width: 11px;
+  height: 11px;
   transform: rotate(45deg);
 }
 
@@ -82,6 +82,11 @@ body {
   pointer-events: none;
 }
 
+/* Stacked bottom-right, thumb-reachable, rather than the top-right corner
+   -- matches where these controls sit on most mobile map apps. Bottom-up:
+   location, directions, add place, map style. Hidden while navigating (see
+   the .map-fab-stack rule below); NavBottomBar/the recenter button occupy
+   this same corner then. */
 .map-style-toggle,
 .me-button,
 .directions-fab,
@@ -103,26 +108,32 @@ body {
 }
 
 .me-button {
-  top: 100px;
+  bottom: 12px;
 }
 
 .directions-fab {
-  top: 152px;
+  bottom: 64px;
   background: var(--sky);
   color: white;
 }
 
 .map-type-wrap {
-  position: relative;
+  position: absolute;
+  right: 12px;
+  bottom: 168px;
+  width: 40px;
+  height: 40px;
 }
 
 .map-style-toggle {
-  top: 204px;
+  position: absolute;
+  inset: 0;
+  right: auto;
 }
 
 .map-type-menu {
   position: absolute;
-  top: 204px;
+  bottom: 0;
   right: 52px;
   z-index: 10;
   display: flex;
@@ -193,9 +204,38 @@ body {
   pointer-events: none;
 }
 
+.category-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.category-filter-toggle {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: var(--navy);
+  box-shadow: 0 1px 4px rgba(11, 37, 69, 0.18);
+  cursor: pointer;
+}
+
+.category-filter-toggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s ease;
+}
+
 .category-filter {
   display: flex;
   gap: 8px;
+  min-width: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -441,7 +481,7 @@ body {
 }
 
 .add-place-fab {
-  top: 256px;
+  bottom: 116px;
 }
 
 .add-place-fab[data-active='true'] {
@@ -640,6 +680,12 @@ body {
 
 .search-bar {
   position: relative;
+  /* Both this and .category-filter-wrap are position:relative siblings
+     inside .top-overlay with no z-index of their own, so paint order falls
+     back to DOM order -- the chip row (which comes after in the markup)
+     was winning and intercepting clicks meant for the search-results
+     dropdown that overflows down into that space. */
+  z-index: 2;
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -674,6 +720,134 @@ body {
 .account-button[data-signed-in='true'] {
   background: var(--navy);
   color: white;
+}
+
+.weather-widget {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.weather-button {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: none;
+  background: white;
+  color: var(--navy);
+  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.18);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.weather-button[data-active='true'] {
+  background: var(--navy);
+  color: white;
+}
+
+.weather-button svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+}
+
+.weather-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.22);
+}
+
+.weather-panel-error {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.weather-panel-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.weather-panel-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  color: var(--sky);
+}
+
+.weather-panel-temp {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.weather-panel-condition {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.weather-panel-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--mist);
+}
+
+.weather-panel-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.weather-panel-stats dt {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #94a3b8;
+}
+
+.weather-panel-stats dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.weather-panel-aqi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--mist);
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.weather-panel-aqi-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--aqi-color, var(--ink));
+}
+
+.weather-panel-aqi-unknown {
+  color: #94a3b8;
+  font-weight: 600;
 }
 
 .account-panel {
@@ -795,6 +969,20 @@ body {
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(11, 37, 69, 0.22);
   overflow: hidden;
+}
+
+/* Same reasoning as the .place-card desktop override above -- a full-width
+   bottom sheet is a mobile pattern and shouldn't blanket a PC browser
+   window's map view. */
+@media (min-width: 720px) {
+  .place-list {
+    left: 12px;
+    right: auto;
+    top: 108px;
+    bottom: 12px;
+    width: 380px;
+    max-height: none;
+  }
 }
 
 .place-list-header {
@@ -961,6 +1149,30 @@ body {
   color: #64748b;
 }
 
+.search-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.search-results-header button {
+  width: auto;
+  min-height: auto;
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--sky);
+}
+
 .directions-label {
   display: block;
   font-size: 11px;
@@ -1036,6 +1248,22 @@ body {
   background: #f1f5f9;
 }
 
+.directions-input-results button.place-select-my-location {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sky);
+  font-weight: 600;
+  border-bottom: 1px solid var(--mist);
+  border-radius: 6px 6px 0 0;
+}
+
+.place-select-my-location svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+}
+
 .directions-reverse {
   flex: 0 0 auto;
   width: 40px;
@@ -1104,6 +1332,34 @@ body {
 
 .directions-panel .place-card-body {
   overflow-y: auto;
+}
+
+/* Below ~720px this is a mobile bottom sheet (the default rules above).
+   On a wider PC/tablet viewport that same sheet, sized up to 70vh, was
+   eating most of the visible map on a typical (short) laptop window --
+   switch it to a left-anchored side panel instead, like Google Maps does
+   on desktop, so the map and route stay visible next to it. */
+@media (min-width: 720px) {
+  .place-card {
+    left: 12px;
+    right: auto;
+    top: 108px;
+    bottom: 12px;
+    width: 380px;
+    max-width: 380px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .place-card-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+
+  .directions-panel {
+    max-height: none;
+  }
 }
 
 .directions-steps {
@@ -1229,6 +1485,29 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.recenter-button {
+  position: absolute;
+  right: 12px;
+  bottom: 92px;
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: var(--navy);
+  color: white;
+  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.35);
+  cursor: pointer;
+}
+
+.recenter-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 .nav-bottom-end {

@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { addRecentSearch, clearRecentSearches, getRecentSearches } from '../data/recentSearches';
 
 const SpeechRecognitionApi = typeof window !== 'undefined' ? window.SpeechRecognition ?? window.webkitSpeechRecognition : null;
 
@@ -10,7 +11,9 @@ function matches(place, query) {
 
 export default function SearchBar({ places, onSelect }) {
   const [query, setQuery] = useState('');
+  const [focused, setFocused] = useState(false);
   const [listening, setListening] = useState(false);
+  const [recents, setRecents] = useState(getRecentSearches);
   const recognitionRef = useRef(null);
 
   const results = useMemo(() => {
@@ -19,9 +22,25 @@ export default function SearchBar({ places, onSelect }) {
     return places.filter((p) => matches(p, q)).slice(0, 8);
   }, [places, query]);
 
+  // Recents are stored as {id, name, category}, not full place records --
+  // re-resolve against the current places list so stale data (a place
+  // renamed or removed since it was searched) never shows.
+  const recentPlaces = useMemo(() => {
+    if (query.trim()) return [];
+    const byId = new Map(places.map((p) => [p.id, p]));
+    return recents.map((r) => byId.get(r.id)).filter(Boolean);
+  }, [recents, places, query]);
+
   function handleSelect(place) {
     onSelect(place);
     setQuery('');
+    setFocused(false);
+    setRecents(addRecentSearch(place));
+  }
+
+  function handleClearRecents() {
+    clearRecentSearches();
+    setRecents([]);
   }
 
   function handleVoiceSearch() {
@@ -46,6 +65,8 @@ export default function SearchBar({ places, onSelect }) {
         placeholder="Search places (e.g. SUB, Library, Clinic)"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
       {SpeechRecognitionApi && (
         <button
@@ -66,7 +87,25 @@ export default function SearchBar({ places, onSelect }) {
         <ul className="search-results">
           {results.map((p) => (
             <li key={p.id}>
-              <button type="button" onClick={() => handleSelect(p)}>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => handleSelect(p)}>
+                <span className="search-result-name">{p.name}</span>
+                <span className="search-result-category">{p.category}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {results.length === 0 && focused && recentPlaces.length > 0 && (
+        <ul className="search-results">
+          <li className="search-results-header">
+            <span>Recent</span>
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={handleClearRecents}>
+              Clear
+            </button>
+          </li>
+          {recentPlaces.map((p) => (
+            <li key={p.id}>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => handleSelect(p)}>
                 <span className="search-result-name">{p.name}</span>
                 <span className="search-result-category">{p.category}</span>
               </button>

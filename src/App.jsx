@@ -7,6 +7,7 @@ import SubmitPlaceForm from './components/SubmitPlaceForm';
 import CategoryFilter from './components/CategoryFilter';
 import SearchBar from './components/SearchBar';
 import DirectionsPanel from './components/DirectionsPanel';
+import WeatherWidget from './components/WeatherWidget';
 import NavBanner from './components/NavBanner';
 import NavBottomBar from './components/NavBottomBar';
 import LoadingScreen from './components/LoadingScreen';
@@ -65,7 +66,10 @@ export default function App() {
   const arrivalTimerRef = useRef(null);
   const meFlyToDoneRef = useRef(false);
 
-  const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(navigating || meActive);
+  const originIsLiveLocation = originPlace?.isLiveLocation ?? false;
+  const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(
+    navigating || meActive || originIsLiveLocation,
+  );
 
   function loadData() {
     setDataLoading(true);
@@ -151,16 +155,29 @@ export default function App() {
     return buildGraph(nodes, edges);
   }, [nodes, edges]);
 
-  // Static route: from whichever place is picked in the "From" dropdown.
+  // Static route: from whichever place is picked in the "From" field, or
+  // from the walker's live GPS position if they chose "Your location".
   const staticRoute = useMemo(() => {
     if (!routingGraph || !originPlace || !destinationPlace) return null;
-    return routeBetween(routingGraph, originPlace.nearest_node_id, destinationPlace.nearest_node_id);
-  }, [routingGraph, originPlace, destinationPlace]);
+    const startNodeId = originIsLiveLocation
+      ? userPosition
+        ? nearestNodeId(userPosition, routingGraph.coords)
+        : null
+      : originPlace.nearest_node_id;
+    if (startNodeId == null) return null;
+    return routeBetween(routingGraph, startNodeId, destinationPlace.nearest_node_id);
+  }, [routingGraph, originPlace, destinationPlace, originIsLiveLocation, userPosition]);
+
+  const staticOriginForSteps = useMemo(() => {
+    if (!originIsLiveLocation) return originPlace;
+    if (!userPosition) return null;
+    return { id: 'live', name: 'your location', lat: userPosition.lat, lng: userPosition.lng };
+  }, [originIsLiveLocation, originPlace, userPosition]);
 
   const staticSteps = useMemo(() => {
-    if (!staticRoute || !routingGraph || !originPlace || !destinationPlace) return [];
-    return buildSteps(staticRoute.path, routingGraph.coords, originPlace, destinationPlace, places);
-  }, [staticRoute, routingGraph, originPlace, destinationPlace, places]);
+    if (!staticRoute || !routingGraph || !staticOriginForSteps || !destinationPlace) return [];
+    return buildSteps(staticRoute.path, routingGraph.coords, staticOriginForSteps, destinationPlace, places);
+  }, [staticRoute, routingGraph, staticOriginForSteps, destinationPlace, places]);
 
   // Live route: recomputed from the walker's current GPS fix every update,
   // so it's inherently self-correcting — no separate "off route" check
@@ -320,6 +337,7 @@ export default function App() {
         userPosition={navigating || meActive ? userPosition : null}
         navigating={navigating}
         meActive={meActive}
+        declutterByZoom={!activeCategory}
         onPlaceClick={handleSelectPlace}
         onUserPositionDrag={overridePosition}
         onToggleMe={handleToggleMe}
@@ -354,6 +372,7 @@ export default function App() {
             {dataError && <ErrorBanner message={dataError} onRetry={loadData} />}
             <div className="search-row">
               <SearchBar places={places} onSelect={handleSelectPlace} />
+              <WeatherWidget />
               <button
                 type="button"
                 className="account-button"
@@ -385,6 +404,7 @@ export default function App() {
               steps={staticSteps}
               onStartNavigation={handleStartNavigation}
               locationStatus={locationStatus}
+              locatingOrigin={originIsLiveLocation && !userPosition}
             />
           ) : newPlaceLocation ? (
             <SubmitPlaceForm

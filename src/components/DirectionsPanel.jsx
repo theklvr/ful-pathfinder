@@ -13,6 +13,7 @@ export default function DirectionsPanel({
   steps = [],
   onStartNavigation,
   locationStatus,
+  locatingOrigin = false,
 }) {
   const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
 
@@ -31,7 +32,14 @@ export default function DirectionsPanel({
       <div className="place-card-body">
         <div className="directions-fields">
           <div className="directions-fields-inputs">
-            <PlaceSelectField label="From" places={places} value={origin} onChange={onChangeOrigin} placeholder="Choose starting point" />
+            <PlaceSelectField
+              label="From"
+              places={places}
+              value={origin}
+              onChange={onChangeOrigin}
+              placeholder="Choose starting point"
+              myLocationOption
+            />
             <PlaceSelectField label="To" places={places} value={destination} onChange={onChangeDestination} placeholder="Choose destination" />
           </div>
           <button
@@ -54,6 +62,12 @@ export default function DirectionsPanel({
           <div className="directions-summary directions-summary-empty">Choose a destination.</div>
         ) : !origin ? (
           <div className="directions-summary directions-summary-empty">Choose a starting point.</div>
+        ) : origin.isLiveLocation && locationStatus === 'denied' ? (
+          <div className="directions-summary directions-summary-empty">
+            Location access was denied. Allow it in your browser's site settings, or pick a starting point instead.
+          </div>
+        ) : origin.isLiveLocation && locatingOrigin ? (
+          <div className="directions-summary directions-summary-empty">Finding your location…</div>
         ) : route ? (
           <>
             <div className="directions-summary">
