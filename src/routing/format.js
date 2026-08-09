@@ -1,4 +1,8 @@
-export function formatDistance(m) {
+export function formatDistance(m, unit = 'metric') {
+  if (unit === 'imperial') {
+    const miles = m / 1609.34;
+    return miles >= 0.1 ? `${miles.toFixed(1)} mi` : `${Math.round(m / 0.3048)} ft`;
+  }
   return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : `${Math.round(m)} m`;
 }
 

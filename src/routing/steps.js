@@ -1,4 +1,5 @@
 import { haversine } from './haversine.js';
+import { formatDistance } from './format.js';
 
 const TURN_THRESHOLD_DEG = 25;
 const LANDMARK_RADIUS_M = 50;
@@ -27,10 +28,6 @@ function turnKind(deltaDeg) {
   return 'straight';
 }
 
-function formatDistance(m) {
-  return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : `${Math.round(m)} m`;
-}
-
 function nearestLandmark(point, places, excludeIds) {
   let best = null;
   let bestDist = LANDMARK_RADIUS_M;
@@ -52,7 +49,7 @@ function nearestLandmark(point, places, excludeIds) {
 // Each returned step is { text, kind, at } — `at` is the coordinate the
 // instruction becomes relevant at (the turn node, or the destination for
 // the final step), used by live navigation to count down distance to it.
-export function buildSteps(path, coords, origin, destination, places) {
+export function buildSteps(path, coords, origin, destination, places, unit = 'metric') {
   if (!path || path.length < 2) return [];
 
   const usedPlaceIds = new Set([origin.id, destination.id]);
@@ -76,7 +73,7 @@ export function buildSteps(path, coords, origin, destination, places) {
       const landmarkText = landmark ? `, past ${landmark.name}` : '';
 
       steps.push({
-        text: `${turnLabel(delta)} after ${formatDistance(legDistance)}${landmarkText}.`,
+        text: `${turnLabel(delta)} after ${formatDistance(legDistance, unit)}${landmarkText}.`,
         kind: turnKind(delta),
         at: coords.get(path[i]),
       });

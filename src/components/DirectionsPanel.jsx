@@ -14,6 +14,7 @@ export default function DirectionsPanel({
   onStartNavigation,
   locationStatus,
   locatingOrigin = false,
+  unit = 'metric',
 }) {
   const { sheetRef, handleProps } = useSwipeToDismiss(onClose);
 
@@ -71,7 +72,7 @@ export default function DirectionsPanel({
         ) : route ? (
           <>
             <div className="directions-summary">
-              <span>{formatDistance(route.distanceM)}</span>
+              <span>{formatDistance(route.distanceM, unit)}</span>
               <span>{formatDuration(route.distanceM)} walk</span>
             </div>
 

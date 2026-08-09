@@ -41,7 +41,7 @@ function SpeakerIcon({ muted }) {
   );
 }
 
-export default function NavBanner({ step, distanceToStep, voiceEnabled, onToggleVoice, statusMessage }) {
+export default function NavBanner({ step, distanceToStep, unit = 'metric', voiceEnabled, onToggleVoice, statusMessage }) {
   return (
     <div className="nav-banner">
       {statusMessage ? (
@@ -53,7 +53,7 @@ export default function NavBanner({ step, distanceToStep, voiceEnabled, onToggle
           </div>
           <div className="nav-banner-body">
             {distanceToStep != null && step.kind !== 'arrive' && (
-              <div className="nav-banner-distance">{formatDistance(distanceToStep)}</div>
+              <div className="nav-banner-distance">{formatDistance(distanceToStep, unit)}</div>
             )}
             <div className="nav-banner-text">{step.text}</div>
           </div>

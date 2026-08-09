@@ -52,6 +52,7 @@ const MapView = forwardRef(function MapView(
     navigating = false,
     meActive = false,
     declutterByZoom = true,
+    initialFlavor = 'light',
     onPlaceClick,
     onUserPositionDrag,
     onToggleMe,
@@ -69,7 +70,7 @@ const MapView = forwardRef(function MapView(
   const [mapLoaded, setMapLoaded] = useState(false);
   const [zoom, setZoom] = useState(FELELE_ZOOM);
   const [styleVersion, setStyleVersion] = useState(0);
-  const [flavor, setFlavor] = useState('light');
+  const [flavor, setFlavor] = useState(initialFlavor);
   const [mapTypeMenuOpen, setMapTypeMenuOpen] = useState(false);
   const [following, setFollowing] = useState(true);
   const addPlaceModeRef = useRef(addPlaceMode);

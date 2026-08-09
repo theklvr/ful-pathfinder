@@ -12,9 +12,13 @@ import NavBanner from './components/NavBanner';
 import NavBottomBar from './components/NavBottomBar';
 import LoadingScreen from './components/LoadingScreen';
 import ErrorBanner from './components/ErrorBanner';
+import BottomNav from './components/BottomNav';
+import YouPanel from './components/YouPanel';
+import ContributePanel from './components/ContributePanel';
 import { fetchPlaces } from './data/places';
 import { fetchNodes, fetchEdges } from './data/network';
 import { fetchFavoriteIds, addFavorite, removeFavorite } from './data/favorites';
+import { recordVisit } from './data/visited';
 import { CATEGORIES } from './data/categories';
 import { buildGraph, nearestNodeId } from './routing/graph';
 import { astar, haversineHeuristic } from './routing/astar';
@@ -22,6 +26,8 @@ import { haversine } from './routing/haversine';
 import { buildSteps, currentLiveStep } from './routing/steps';
 import { useLiveLocation } from './location/useLiveLocation';
 import { useAuth } from './lib/auth';
+import { useProfile } from './lib/useProfile';
+import { useSettings } from './lib/useSettings';
 
 const DEFAULT_ORIGIN_NAME = 'School Gate';
 const ARRIVAL_RADIUS_M = 15;
@@ -51,7 +57,8 @@ export default function App() {
   const [destinationPlace, setDestinationPlace] = useState(null);
   const [showDirections, setShowDirections] = useState(false);
   const [navigating, setNavigating] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [settings, updateSettings] = useSettings();
+  const [voiceEnabled, setVoiceEnabled] = useState(settings.voiceEnabled);
   const [arrived, setArrived] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [dataError, setDataError] = useState(null);
@@ -60,7 +67,9 @@ export default function App() {
   const [favoriteIds, setFavoriteIds] = useState(new Set());
   const [addPlaceMode, setAddPlaceMode] = useState(false);
   const [newPlaceLocation, setNewPlaceLocation] = useState(null);
+  const [activeTab, setActiveTab] = useState('explore');
   const auth = useAuth();
+  const [profile, setProfile] = useProfile(auth.user);
   const mapRef = useRef(null);
   const lastSpokenRef = useRef('');
   const arrivalTimerRef = useRef(null);
@@ -176,8 +185,8 @@ export default function App() {
 
   const staticSteps = useMemo(() => {
     if (!staticRoute || !routingGraph || !staticOriginForSteps || !destinationPlace) return [];
-    return buildSteps(staticRoute.path, routingGraph.coords, staticOriginForSteps, destinationPlace, places);
-  }, [staticRoute, routingGraph, staticOriginForSteps, destinationPlace, places]);
+    return buildSteps(staticRoute.path, routingGraph.coords, staticOriginForSteps, destinationPlace, places, settings.unit);
+  }, [staticRoute, routingGraph, staticOriginForSteps, destinationPlace, places, settings.unit]);
 
   // Live route: recomputed from the walker's current GPS fix every update,
   // so it's inherently self-correcting — no separate "off route" check
@@ -191,8 +200,8 @@ export default function App() {
   const liveSteps = useMemo(() => {
     if (!liveRoute || !routingGraph || !destinationPlace || !userPosition) return [];
     const virtualOrigin = { id: 'live', name: 'your location', lat: userPosition.lat, lng: userPosition.lng };
-    return buildSteps(liveRoute.path, routingGraph.coords, virtualOrigin, destinationPlace, places);
-  }, [liveRoute, routingGraph, destinationPlace, places, userPosition]);
+    return buildSteps(liveRoute.path, routingGraph.coords, virtualOrigin, destinationPlace, places, settings.unit);
+  }, [liveRoute, routingGraph, destinationPlace, places, userPosition, settings.unit]);
 
   const currentStep = useMemo(() => currentLiveStep(liveSteps), [liveSteps]);
   const distanceToStep = currentStep && userPosition ? haversine(userPosition, currentStep.at) : null;
@@ -204,7 +213,10 @@ export default function App() {
     if (!navigating || !userPosition || !destinationPlace) return;
     const distanceToDestination = haversine(userPosition, { lat: destinationPlace.lat, lng: destinationPlace.lng });
     if (distanceToDestination <= ARRIVAL_RADIUS_M) {
-      if (!arrived) setArrived(true);
+      if (!arrived) {
+        setArrived(true);
+        if (auth.user) recordVisit(auth.user.id, destinationPlace.id);
+      }
       if (!arrivalTimerRef.current) {
         arrivalTimerRef.current = setTimeout(() => {
           setNavigating(false);
@@ -213,7 +225,7 @@ export default function App() {
         }, 4000);
       }
     }
-  }, [navigating, userPosition, destinationPlace, arrived]);
+  }, [navigating, userPosition, destinationPlace, arrived, auth.user]);
 
   useEffect(() => {
     if (!navigating) {
@@ -240,6 +252,7 @@ export default function App() {
   }
 
   function handleSelectPlace(place) {
+    setActiveTab('explore');
     setShowDirections(false);
     setDestinationPlace(null);
     setSelectedPlace(place);
@@ -287,6 +300,7 @@ export default function App() {
       handleRequireSignIn();
       return;
     }
+    setActiveTab('explore');
     setSelectedPlace(null);
     setShowDirections(false);
     setActiveCategory(null);
@@ -338,6 +352,7 @@ export default function App() {
         navigating={navigating}
         meActive={meActive}
         declutterByZoom={!activeCategory}
+        initialFlavor={settings.mapStyle}
         onPlaceClick={handleSelectPlace}
         onUserPositionDrag={overridePosition}
         onToggleMe={handleToggleMe}
@@ -354,6 +369,7 @@ export default function App() {
           <NavBanner
             step={currentStep}
             distanceToStep={distanceToStep}
+            unit={settings.unit}
             voiceEnabled={voiceEnabled}
             onToggleVoice={() => setVoiceEnabled((v) => !v)}
             statusMessage={navBannerStatusMessage}
@@ -362,6 +378,7 @@ export default function App() {
             <NavBottomBar
               destination={destinationPlace}
               remainingDistanceM={liveRoute?.distanceM ?? 0}
+              unit={settings.unit}
               onEnd={handleEndNavigation}
             />
           )}
@@ -381,18 +398,54 @@ export default function App() {
                 aria-label="Account"
                 onClick={() => setShowAccountPanel((v) => !v)}
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                </svg>
+                {profile?.avatar_url ? (
+                  <img className="account-button-avatar" src={profile.avatar_url} alt="" />
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                  </svg>
+                )}
               </button>
             </div>
-            {showAccountPanel && <AccountPanel auth={auth} onClose={() => setShowAccountPanel(false)} />}
+            {showAccountPanel && (
+              <AccountPanel
+                auth={auth}
+                profile={profile}
+                onProfileChange={setProfile}
+                onStartAddPlace={handleStartAddPlace}
+                settings={settings}
+                onUpdateSettings={updateSettings}
+                onClose={() => setShowAccountPanel(false)}
+              />
+            )}
             <div className="category-filter-wrap">
               <CategoryFilter activeCategory={activeCategory} onSelect={selectCategory} />
             </div>
           </div>
-          {showDirections ? (
+          {activeTab === 'you' ? (
+            <div className="place-card tab-panel">
+              <YouPanel
+                places={places}
+                auth={auth}
+                profile={profile}
+                onProfileChange={setProfile}
+                favoriteIds={favoriteIds}
+                onSelectPlace={handleSelectPlace}
+                onRequireSignIn={handleRequireSignIn}
+              />
+            </div>
+          ) : activeTab === 'contribute' ? (
+            <div className="place-card tab-panel">
+              <ContributePanel
+                places={places}
+                auth={auth}
+                onRequireSignIn={handleRequireSignIn}
+                onStartAddPlace={handleStartAddPlace}
+                onOpenPlaceForReview={handleSelectPlace}
+              />
+            </div>
+          ) : showDirections ? (
             <DirectionsPanel
               places={places}
               origin={originPlace}
@@ -402,6 +455,7 @@ export default function App() {
               onClose={handleCloseDirections}
               route={staticRoute}
               steps={staticSteps}
+              unit={settings.unit}
               onStartNavigation={handleStartNavigation}
               locationStatus={locationStatus}
               locatingOrigin={originIsLiveLocation && !userPosition}
@@ -433,6 +487,7 @@ export default function App() {
               onClose={() => setActiveCategory(null)}
             />
           ) : null}
+          <BottomNav activeTab={activeTab} onSelect={setActiveTab} />
         </>
       )}
     </>
