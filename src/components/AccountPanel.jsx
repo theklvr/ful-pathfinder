@@ -3,6 +3,7 @@ import { fetchMySubmissions } from '../data/submissions';
 import { upsertProfile } from '../data/profiles';
 import SettingsPanel from './SettingsPanel';
 import DeveloperPanel from './DeveloperPanel';
+import AdminPanel from './AdminPanel';
 
 function PageHeader({ title, onSettings, onClose }) {
   return (
@@ -28,9 +29,10 @@ function PageHeader({ title, onSettings, onClose }) {
   );
 }
 
-export default function AccountPanel({ auth, profile, onProfileChange, onStartAddPlace, settings, onUpdateSettings, onClose }) {
+export default function AccountPanel({ auth, profile, onProfileChange, onStartAddPlace, settings, onUpdateSettings, places, onClose }) {
   const [showSettings, setShowSettings] = useState(false);
   const [showDeveloper, setShowDeveloper] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
   const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,6 +69,20 @@ export default function AccountPanel({ auth, profile, onProfileChange, onStartAd
     } finally {
       setSavingProfile(false);
     }
+  }
+
+  if (showAdmin) {
+    return (
+      <div className="account-page">
+        <PageHeader title="Admin" onClose={onClose} />
+        <button type="button" className="settings-back" aria-label="Back to profile" onClick={() => setShowAdmin(false)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <AdminPanel places={places} />
+      </div>
+    );
   }
 
   if (showDeveloper) {
@@ -156,6 +172,15 @@ export default function AccountPanel({ auth, profile, onProfileChange, onStartAd
           </svg>
           Add your business
         </button>
+
+        {profile?.is_admin && (
+          <button type="button" className="account-add-business" onClick={() => setShowAdmin(true)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" />
+            </svg>
+            Admin: review submissions
+          </button>
+        )}
 
         {mySubmissions.length > 0 && (
           <div className="account-submissions">

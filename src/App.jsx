@@ -469,6 +469,7 @@ export default function App() {
                 onStartAddPlace={handleStartAddPlace}
                 settings={settings}
                 onUpdateSettings={updateSettings}
+                places={places}
                 onClose={() => setShowAccountPanel(false)}
               />
             )}

@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-const PROFILE_COLUMNS = 'id, display_name, avatar_url, home_lat, home_lng, home_label, work_lat, work_lng, work_label';
+const PROFILE_COLUMNS = 'id, display_name, avatar_url, home_lat, home_lng, home_label, work_lat, work_lng, work_label, is_admin';
 
 export async function fetchProfile(userId) {
   const { data, error } = await supabase.from('profiles').select(PROFILE_COLUMNS).eq('id', userId).maybeSingle();
