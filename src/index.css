@@ -2527,6 +2527,27 @@ button.you-list-row {
   width: 100%;
 }
 
+.admin-photo-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-photo-upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--mist);
+  background: white;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 /* SharePage -- the recipient-facing view for a location-share link, a
    separate mini "page" (main.jsx renders it instead of App) rather than a
    view inside the main app, since the recipient may have no account and no

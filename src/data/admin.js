@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { compressImageToWebp, blobToBase64 } from '../utils/compressImage';
 
 export async function fetchPendingSubmissions() {
   const { data, error } = await supabase
@@ -47,6 +48,12 @@ export function reviewEditSuggestion(id, decision, note) {
 
 export function updatePlace(placeId, fields) {
   return callAdminApi('updatePlace', { placeId, fields });
+}
+
+export async function uploadPlacePhoto(placeId, file) {
+  const compressed = await compressImageToWebp(file);
+  const imageBase64 = await blobToBase64(compressed);
+  return callAdminApi('uploadPlacePhoto', { placeId, imageBase64 });
 }
 
 export function previewOsmUpdate(osmExport) {

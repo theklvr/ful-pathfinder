@@ -129,7 +129,7 @@ export async function previewOsmUpdate(supabase, { osmExport }) {
 // full replace (like the local CLI pipeline's seed scripts do) would
 // cascade-delete every favorite/review/list/visited-history row tied to
 // existing places, since those all reference places.id.
-async function applyOsmUpdate(supabase, { osmExport }) {
+export async function applyOsmUpdate(supabase, { osmExport }) {
   const merge = await computeOsmMerge(supabase, osmExport);
   if (!merge.connectivityOk) {
     throw new Error(
@@ -211,6 +211,35 @@ async function applyOsmUpdate(supabase, { osmExport }) {
   };
 }
 
+const PLACE_PHOTOS_BUCKET = 'place-photos';
+const MAX_UPLOAD_BYTES = 3 * 1024 * 1024; // decoded bytes; the client already compresses to well under this
+
+// The admin's own upload button -- the client compresses to WebP in-browser
+// first (src/utils/compressImage.js), so this just decodes, stores, and
+// points the place at it. Same bucket scripts/prepare-photos.mjs uses.
+async function uploadPlacePhoto(supabase, { placeId, imageBase64 }) {
+  if (!placeId) throw new Error('Missing placeId');
+  if (!imageBase64) throw new Error('Missing image data');
+
+  const buffer = Buffer.from(imageBase64, 'base64');
+  if (buffer.length > MAX_UPLOAD_BYTES) {
+    throw new Error(`Image too large (${Math.round(buffer.length / 1024)}KB) -- try a smaller photo`);
+  }
+
+  const storagePath = `admin-upload-${placeId}-${Date.now()}.webp`;
+  const { error: uploadError } = await supabase.storage
+    .from(PLACE_PHOTOS_BUCKET)
+    .upload(storagePath, buffer, { contentType: 'image/webp', upsert: true });
+  if (uploadError) throw uploadError;
+
+  const { data: publicUrlData } = supabase.storage.from(PLACE_PHOTOS_BUCKET).getPublicUrl(storagePath);
+
+  const { error: updateError } = await supabase.from('places').update({ photo_url: publicUrlData.publicUrl }).eq('id', placeId);
+  if (updateError) throw updateError;
+
+  return { photoUrl: publicUrlData.publicUrl };
+}
+
 async function updatePlace(supabase, { placeId, fields }) {
   const allowed = ['name', 'category', 'aliases', 'description', 'photo_url'];
   const patch = {};
@@ -251,6 +280,7 @@ export default async function handler(req, res) {
     else if (action === 'updatePlace') result = await updatePlace(auth.supabase, params);
     else if (action === 'previewOsmUpdate') result = await previewOsmUpdate(auth.supabase, params);
     else if (action === 'applyOsmUpdate') result = await applyOsmUpdate(auth.supabase, params);
+    else if (action === 'uploadPlacePhoto') result = await uploadPlacePhoto(auth.supabase, params);
     else {
       res.status(400).json({ error: `Unknown action "${action}"` });
       return;

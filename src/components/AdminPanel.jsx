@@ -5,6 +5,7 @@ import {
   reviewSubmission,
   reviewEditSuggestion,
   updatePlace,
+  uploadPlacePhoto,
   previewOsmUpdate,
   applyOsmUpdate,
 } from '../data/admin';
@@ -93,8 +94,7 @@ function EditSuggestionCard({ suggestion, onReviewed }) {
         <p className="admin-card-meta">{new Date(suggestion.created_at).toLocaleDateString()}</p>
         {suggestion.kind !== 'photo' && (
           <p className="admin-card-meta admin-card-warning">
-            Approving records the decision but doesn't change the place automatically -- use "Edit a place" below to make the
-            actual change.
+            Approving just records the decision. To actually change the place, use "Edit a place" below.
           </p>
         )}
         <input
@@ -124,6 +124,8 @@ function EditPlaceSection({ places }) {
   const [photoUrl, setPhotoUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
 
   function handleSelect(place) {
     setSelected(place);
@@ -132,6 +134,7 @@ function EditPlaceSection({ places }) {
     setDescription(place.description || '');
     setPhotoUrl(place.photo_url || '');
     setSaved(false);
+    setUploadError(null);
   }
 
   async function handleSave() {
@@ -143,6 +146,22 @@ function EditPlaceSection({ places }) {
       alert(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handlePhotoFile(e) {
+    const file = e.target.files?.[0];
+    if (!file || !selected) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const { photoUrl: uploadedUrl } = await uploadPlacePhoto(selected.id, file);
+      setPhotoUrl(uploadedUrl);
+      setSaved(true);
+    } catch (err) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -166,6 +185,15 @@ function EditPlaceSection({ places }) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
           />
+          {photoUrl && <img className="admin-card-photo" src={photoUrl} alt="" />}
+          <div className="admin-photo-upload-row">
+            <label className="admin-photo-upload-button">
+              {uploading ? 'Uploading…' : 'Upload a photo'}
+              <input type="file" accept="image/*" onChange={handlePhotoFile} disabled={uploading} hidden />
+            </label>
+            <span className="admin-card-meta">or paste a URL below</span>
+          </div>
+          {uploadError && <p className="account-panel-error">{uploadError}</p>}
           <input
             className="directions-input"
             value={photoUrl}
@@ -228,11 +256,11 @@ function OsmUpdateSection() {
     <section className="settings-group">
       <span className="directions-label">Update campus data from OpenStreetMap</span>
       <p className="developer-note">
-        Upload a raw Overpass export (overpass-turbo.eu -&gt; run the survey query -&gt; Export -&gt; "raw data", not
-        "GeoJSON") to add new buildings and paths the school has traced since the last update. New items are only ever
-        added, never replacing or removing anything already on the map. Re-uploading the same export you already
-        applied can show inflated "new" counts -- if a number looks surprisingly high for what should be a small
-        update, double-check before applying.
+        Upload a raw Overpass export (overpass-turbo.eu: run the survey query, then Export &gt; "raw data," not
+        "GeoJSON") to add new buildings and paths the school has traced since the last update. This only ever adds new
+        items. It never replaces or removes anything already on the map. One catch: re-uploading an export you've
+        already applied can show inflated "new" counts. If a number looks too high for what should be a small update,
+        double-check before applying.
       </p>
       <input type="file" accept="application/json,.json" onChange={handleFile} disabled={busy} />
       {fileName && <p className="developer-note">Selected: {fileName}</p>}
@@ -249,7 +277,7 @@ function OsmUpdateSection() {
           </p>
           {preview.connectivityOk ? (
             <>
-              <p className="admin-osm-success">Connectivity check passed -- every place stays reachable from School Gate after this update.</p>
+              <p className="admin-osm-success">Connectivity check passed: every place stays reachable from School Gate after this update.</p>
               <button type="button" className="admin-approve admin-osm-apply" disabled={busy} onClick={handleApply}>
                 Apply to live site
               </button>
@@ -257,8 +285,8 @@ function OsmUpdateSection() {
           ) : (
             <p className="admin-card-warning">
               Blocked: {preview.report.connectivity.placesInDisconnectedComponents.length} place(s) would become
-              unreachable from School Gate. This export can't be applied as-is -- the path network needs fixing first
-              (in OSM or by hand).
+              unreachable from School Gate. This export can't be applied as-is. Fix the path network first (in OSM or
+              by hand), then try again.
             </p>
           )}
         </div>

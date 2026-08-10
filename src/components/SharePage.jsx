@@ -109,7 +109,7 @@ export default function SharePage({ shareId }) {
           </div>
         </div>
         <button type="button" className="account-panel-submit" onClick={handleDirections}>
-          Get directions to here
+          Get directions
         </button>
       </div>
     </div>

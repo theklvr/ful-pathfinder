@@ -141,8 +141,8 @@ export default function YouPanel({
         ) : (
           <>
             <p className="developer-note">
-              Generate a link a friend can open to see your live location on the map and get directions to you -- no
-              account needed on their end. Stops automatically after 4 hours.
+              Generate a link a friend can open to see your live location and get directions to you. They don't need
+              an account, and the link stops working on its own after 4 hours.
             </p>
             <button type="button" className="account-panel-submit" onClick={onStartSharing} disabled={shareStarting}>
               {shareStarting ? 'Finding your location…' : 'Share my location'}
@@ -238,7 +238,7 @@ export default function YouPanel({
         <form className="you-new-list" onSubmit={handleCreateList}>
           <input placeholder="New list (e.g. Want to go)" value={newListName} onChange={(e) => setNewListName(e.target.value)} />
           <button type="submit" disabled={!newListName.trim()}>
-            Create
+            Create list
           </button>
         </form>
       </section>

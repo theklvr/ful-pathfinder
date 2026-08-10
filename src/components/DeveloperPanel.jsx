@@ -35,8 +35,8 @@ export default function DeveloperPanel() {
   return (
     <div className="developer-panel">
       <p className="developer-intro">
-        Build against FUL PathFinder's campus data and routing from your own project. Both endpoints below are public and
-        read-only -- no account or approval needed.
+        Build against FUL PathFinder's campus data and routing from your own project. Both endpoints below are public,
+        read-only, and free to use: no account or approval needed.
       </p>
 
       <section className="settings-group">
@@ -55,7 +55,7 @@ GET ${supabaseUrl}/rest/v1/places?category=eq.faculty`}</pre>
 
       <section className="settings-group">
         <span className="directions-label">2. Walking directions</span>
-        <p className="developer-note">Runs the same A* routing this app uses -- accepts a place name or a "lat,lng" pair.</p>
+        <p className="developer-note">Runs the same A* routing this app uses. Accepts a place name or a "lat,lng" pair.</p>
         <CopyField label="Endpoint" value={`${appOrigin}/api/route`} />
         <pre className="developer-example">{`GET ${appOrigin}/api/route?from=School+Gate&to=Library
 GET ${appOrigin}/api/route?from=7.853,6.684&to=Library&unit=imperial`}</pre>

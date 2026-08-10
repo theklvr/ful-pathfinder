@@ -33,7 +33,7 @@ export default function PlaceList({ places, categoryLabel, onSelectPlace, onDire
         </button>
       </div>
       {places.length === 0 ? (
-        <p className="place-list-empty">No {categoryLabel.toLowerCase()} places yet.</p>
+        <p className="place-list-empty">No {categoryLabel} places yet.</p>
       ) : (
         <ul className="place-list-items">
           {places.map((place) => (
