@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { fetchMySubmissions } from '../data/submissions';
 import { upsertProfile } from '../data/profiles';
 import SettingsPanel from './SettingsPanel';
+import DeveloperPanel from './DeveloperPanel';
 
 function PageHeader({ title, onSettings, onClose }) {
   return (
@@ -29,6 +30,7 @@ function PageHeader({ title, onSettings, onClose }) {
 
 export default function AccountPanel({ auth, profile, onProfileChange, onStartAddPlace, settings, onUpdateSettings, onClose }) {
   const [showSettings, setShowSettings] = useState(false);
+  const [showDeveloper, setShowDeveloper] = useState(false);
   const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,11 +69,25 @@ export default function AccountPanel({ auth, profile, onProfileChange, onStartAd
     }
   }
 
+  if (showDeveloper) {
+    return (
+      <div className="account-page">
+        <PageHeader title="Developer / API" onClose={onClose} />
+        <button type="button" className="settings-back" aria-label="Back to settings" onClick={() => setShowDeveloper(false)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <DeveloperPanel />
+      </div>
+    );
+  }
+
   if (showSettings) {
     return (
       <div className="account-page">
         <PageHeader title="Settings" onClose={() => setShowSettings(false)} />
-        <SettingsPanel settings={settings} onUpdateSettings={onUpdateSettings} onBack={() => setShowSettings(false)} bare />
+        <SettingsPanel settings={settings} onUpdateSettings={onUpdateSettings} onOpenDeveloper={() => setShowDeveloper(true)} />
       </div>
     );
   }
@@ -191,6 +207,7 @@ export default function AccountPanel({ auth, profile, onProfileChange, onStartAd
   return (
     <form className="account-page" onSubmit={handleSubmit}>
       <PageHeader title="Sign in" onSettings={() => setShowSettings(true)} onClose={onClose} />
+      <img className="account-page-logo" src="/logo.png" alt="Federal University Lokoja" />
       <button type="button" className="account-google-button" onClick={handleGoogleSignIn}>
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <path

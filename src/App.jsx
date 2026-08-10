@@ -28,6 +28,7 @@ import { useLiveLocation } from './location/useLiveLocation';
 import { useAuth } from './lib/auth';
 import { useProfile } from './lib/useProfile';
 import { useSettings } from './lib/useSettings';
+import { useLocationSharing } from './lib/useLocationSharing';
 
 const DEFAULT_ORIGIN_NAME = 'School Gate';
 const ARRIVAL_RADIUS_M = 15;
@@ -68,17 +69,44 @@ export default function App() {
   const [addPlaceMode, setAddPlaceMode] = useState(false);
   const [newPlaceLocation, setNewPlaceLocation] = useState(null);
   const [activeTab, setActiveTab] = useState('explore');
+  const [wantsToShare, setWantsToShare] = useState(false);
   const auth = useAuth();
   const [profile, setProfile] = useProfile(auth.user);
+  const sharing = useLocationSharing(auth.user);
   const mapRef = useRef(null);
   const lastSpokenRef = useRef('');
   const arrivalTimerRef = useRef(null);
   const meFlyToDoneRef = useRef(false);
 
   const originIsLiveLocation = originPlace?.isLiveLocation ?? false;
+  const isSharingLocation = !!sharing.shareId || wantsToShare;
+  // originPlace is sticky for the whole session once set (see the
+  // default-origin effect below) -- so gating live GPS on originIsLiveLocation
+  // alone meant picking "Your location" once left GPS running in the
+  // background indefinitely, even after Directions was closed and nothing
+  // was using the position anymore. Only keep it live while that choice is
+  // actually in view.
   const { position: userPosition, status: locationStatus, overridePosition } = useLiveLocation(
-    navigating || meActive || originIsLiveLocation || addPlaceMode,
+    navigating || meActive || (showDirections && originIsLiveLocation) || addPlaceMode || isSharingLocation,
   );
+
+  // wantsToShare arms GPS (above) so a fix is available; once one arrives,
+  // actually create the share row. Two steps because there's no position to
+  // share until GPS -- which this same flag turns on -- has produced one.
+  useEffect(() => {
+    if (!wantsToShare || !userPosition) return;
+    setWantsToShare(false);
+    sharing.start(userPosition);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wantsToShare, userPosition]);
+
+  // Keep the shared position fresh while sharing is active (throttled
+  // internally by the hook).
+  useEffect(() => {
+    if (!sharing.shareId || !userPosition) return;
+    sharing.reportPosition(userPosition);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sharing.shareId, userPosition]);
 
   function loadData() {
     setDataLoading(true);
@@ -102,6 +130,25 @@ export default function App() {
 
   useEffect(() => {
     loadData();
+  }, []);
+
+  // Handoff from SharePage's "Get directions to here" -- an arbitrary
+  // lat/lng with no place record, passed via URL params since there's no
+  // shared app state between that page and this one (a fresh page load).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const destLat = params.get('destLat');
+    const destLng = params.get('destLng');
+    if (destLat == null || destLng == null) return;
+    setDestinationPlace({
+      id: `shared:${destLat},${destLng}`,
+      name: params.get('destLabel') || 'Shared location',
+      lat: Number(destLat),
+      lng: Number(destLng),
+      nearest_node_id: null,
+    });
+    setShowDirections(true);
+    window.history.replaceState({}, '', window.location.pathname);
   }, []);
 
   useEffect(() => {
@@ -165,7 +212,11 @@ export default function App() {
   }, [nodes, edges]);
 
   // Static route: from whichever place is picked in the "From" field, or
-  // from the walker's live GPS position if they chose "Your location".
+  // from the walker's live GPS position if they chose "Your location". The
+  // destination is normally a real place with a precomputed nearest_node_id,
+  // but a shared-location link (see the URL-param effect below) hands over
+  // an arbitrary lat/lng with no such precompute -- resolve it the same way
+  // live-location origins already are.
   const staticRoute = useMemo(() => {
     if (!routingGraph || !originPlace || !destinationPlace) return null;
     const startNodeId = originIsLiveLocation
@@ -173,8 +224,9 @@ export default function App() {
         ? nearestNodeId(userPosition, routingGraph.coords)
         : null
       : originPlace.nearest_node_id;
-    if (startNodeId == null) return null;
-    return routeBetween(routingGraph, startNodeId, destinationPlace.nearest_node_id);
+    const endNodeId = destinationPlace.nearest_node_id ?? nearestNodeId(destinationPlace, routingGraph.coords);
+    if (startNodeId == null || endNodeId == null) return null;
+    return routeBetween(routingGraph, startNodeId, endNodeId);
   }, [routingGraph, originPlace, destinationPlace, originIsLiveLocation, userPosition]);
 
   const staticOriginForSteps = useMemo(() => {
@@ -434,6 +486,11 @@ export default function App() {
                 favoriteIds={favoriteIds}
                 onSelectPlace={handleSelectPlace}
                 onRequireSignIn={handleRequireSignIn}
+                shareId={sharing.shareId}
+                shareExpiresAt={sharing.expiresAt}
+                shareStarting={sharing.starting || wantsToShare}
+                onStartSharing={() => setWantsToShare(true)}
+                onStopSharing={() => sharing.stop()}
               />
             </div>
           ) : activeTab === 'contribute' ? (

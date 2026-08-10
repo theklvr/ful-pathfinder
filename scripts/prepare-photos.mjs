@@ -73,9 +73,41 @@ function csvEscape(v) {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// A previous real run failed on 13 consecutive files then recovered on its
+// own -- a transient network drop, not a code bug -- so a short retry loop
+// is worth it rather than making the user re-run the whole script by hand.
+async function uploadWithRetry(storagePath, buffer, attempts = 3) {
+  let lastError;
+  for (let i = 0; i < attempts; i++) {
+    const { error } = await supabase.storage.from(BUCKET).upload(storagePath, buffer, { contentType: 'image/webp', upsert: true });
+    if (!error) return null;
+    lastError = error;
+    await sleep(1000 * (i + 1));
+  }
+  return lastError;
+}
+
+// Not a campus location -- the KLVR/FUL branding logo, kept in the same
+// Assets/images/ folder but not something that belongs on a place card.
+const EXCLUDED_FILES = new Set(['ful_logo.png']);
+
+// Words this short are usually noise ("of", "the") -- but real short
+// campus terms exist too (ICT is a real place name, 3 letters). The regex
+// match is already whole-word (\b...\b), so a short word can't accidentally
+// match inside a longer one -- the length filter only needs to be long
+// enough to drop stopwords, not full generic-word protection.
+const MIN_WORD_LENGTH = 3;
+const STOPWORDS = new Set(['the', 'and', 'for', 'department']);
+
 async function main() {
-  const files = readdirSync(IMAGES_DIR).filter((f) => /\.(jpg|jpeg|png)$/i.test(f));
-  console.log(`Found ${files.length} source images in Assets/images/`);
+  const files = readdirSync(IMAGES_DIR)
+    .filter((f) => /\.(jpg|jpeg|png)$/i.test(f))
+    .filter((f) => !EXCLUDED_FILES.has(f));
+  console.log(`Found ${files.length} source images in Assets/images/ (excluded: ${[...EXCLUDED_FILES].join(', ')})`);
 
   const { data: places, error: placesError } = await supabase.from('places').select('id, name, photo_url');
   if (placesError) throw placesError;
@@ -93,12 +125,9 @@ async function main() {
       .toBuffer();
 
     const storagePath = `${normalize(file).replace(/\s+/g, '-')}-${Buffer.from(file).toString('hex').slice(0, 6)}.webp`;
-    const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, compressed, {
-      contentType: 'image/webp',
-      upsert: true,
-    });
+    const uploadError = await uploadWithRetry(storagePath, compressed);
     if (uploadError) {
-      console.error(`Upload failed for ${file}:`, uploadError.message);
+      console.error(`Upload failed for ${file} (after retries):`, uploadError.message);
       continue;
     }
     const { data: publicUrlData } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
@@ -120,7 +149,7 @@ async function main() {
   const overrideRows = [];
   for (const item of uploaded) {
     const cleaned = normalize(item.file);
-    const words = cleaned.split(' ').filter((w) => w.length >= 4); // skip short/generic tokens
+    const words = cleaned.split(' ').filter((w) => w.length >= MIN_WORD_LENGTH && !STOPWORDS.has(w));
     if (words.length === 0) {
       skipped.push({ file: item.file, url: item.url, reason: 'filename has no usable words (e.g. "1.jpg", "2.jpg")' });
       continue;

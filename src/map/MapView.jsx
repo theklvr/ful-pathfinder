@@ -1,22 +1,12 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Map as MaplibreMap, NavigationControl, ScaleControl, Marker, addProtocol, setWorkerUrl } from 'maplibre-gl';
-import { Protocol } from 'pmtiles';
+import { Map as MaplibreMap, NavigationControl, ScaleControl, Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { setupMapLibre } from './setupMapLibre';
 import { buildStyle } from './style';
 import { CATEGORY_COLOR, DEFAULT_MARKER_COLOR } from '../data/categories';
 import { CATEGORY_ICON_PATH, DEFAULT_ICON_PATH } from '../data/categoryIcons';
 
-// maplibre-gl computes its worker script URL relative to its own bundled
-// chunk's import.meta.url at runtime, which Vite's static analyzer can't
-// see -- so a production build never emits/copies maplibre-gl-worker.mjs,
-// the worker silently fails to start, and vector tiles never get parsed
-// (only DOM markers render; the whole basemap stays blank). Point it at a
-// manually-copied static copy instead (see public/maplibre/, and re-copy
-// from node_modules/maplibre-gl/dist/ if the maplibre-gl version changes).
-setWorkerUrl('/maplibre/maplibre-gl-worker.mjs');
-
-const protocol = new Protocol();
-addProtocol('pmtiles', protocol.tile);
+setupMapLibre();
 
 // Felele (permanent site) campus, Federal University Lokoja.
 // Source: Wikipedia/Wikidata (7°51'34"N 6°41'01"E) — a public reference, not a

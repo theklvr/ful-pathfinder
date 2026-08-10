@@ -5,7 +5,7 @@ const MAP_STYLES = [
   { id: 'satellite', label: 'Satellite' },
 ];
 
-export default function SettingsPanel({ settings, onUpdateSettings }) {
+export default function SettingsPanel({ settings, onUpdateSettings, onOpenDeveloper }) {
   return (
     <div className="settings-panel">
       <div className="settings-group">
@@ -44,6 +44,14 @@ export default function SettingsPanel({ settings, onUpdateSettings }) {
         />
         Voice guidance during navigation
       </label>
+
+      <button type="button" className="account-add-business" onClick={onOpenDeveloper}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+        Developer / API access
+      </button>
     </div>
   );
 }

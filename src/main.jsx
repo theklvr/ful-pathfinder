@@ -2,6 +2,11 @@ import { StrictMode, Component } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import SharePage from './components/SharePage.jsx'
+
+// No router library for one extra "page" -- a shared-location link is the
+// only URL besides "/" this app has, so a plain pathname check is enough.
+const shareMatch = window.location.pathname.match(/^\/share\/([\w-]+)$/);
 
 class ErrorBoundary extends Component {
   state = { error: null };
@@ -28,9 +33,7 @@ class ErrorBoundary extends Component {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+    <ErrorBoundary>{shareMatch ? <SharePage shareId={shareMatch[1]} /> : <App />}</ErrorBoundary>
   </StrictMode>,
 )
 

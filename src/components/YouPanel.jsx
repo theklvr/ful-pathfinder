@@ -3,6 +3,7 @@ import { getRecentSearches } from '../data/recentSearches';
 import { fetchMyLists, createList, deleteList, fetchListItems } from '../data/lists';
 import { fetchVisited } from '../data/visited';
 import { updateHomeWork } from '../data/profiles';
+import { shareUrl } from '../utils/share';
 import PlaceSelectField from './PlaceSelectField';
 
 function groupByDate(rows) {
@@ -15,7 +16,20 @@ function groupByDate(rows) {
   return [...groups.entries()];
 }
 
-export default function YouPanel({ places, auth, profile, onProfileChange, favoriteIds, onSelectPlace, onRequireSignIn }) {
+export default function YouPanel({
+  places,
+  auth,
+  profile,
+  onProfileChange,
+  favoriteIds,
+  onSelectPlace,
+  onRequireSignIn,
+  shareId,
+  shareExpiresAt,
+  shareStarting,
+  onStartSharing,
+  onStopSharing,
+}) {
   const [lists, setLists] = useState([]);
   const [newListName, setNewListName] = useState('');
   const [openListId, setOpenListId] = useState(null);
@@ -102,8 +116,41 @@ export default function YouPanel({ places, auth, profile, onProfileChange, favor
     );
   }
 
+  const shareLink = shareId ? `${window.location.origin}/share/${shareId}` : null;
+  const shareExpiryLabel = shareExpiresAt
+    ? new Date(shareExpiresAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+    : null;
+
   return (
     <div className="you-panel">
+      <section className="you-section">
+        <h3 className="you-section-title">Share your location</h3>
+        {shareId ? (
+          <div className="you-share-active">
+            <p className="you-share-status">Sharing until {shareExpiryLabel}. Anyone with this link can see where you are.</p>
+            <div className="developer-copy-row">
+              <code>{shareLink}</code>
+              <button type="button" onClick={() => shareUrl('My location', 'Here is where I am on campus', shareLink)}>
+                Share
+              </button>
+            </div>
+            <button type="button" className="you-share-stop" onClick={onStopSharing}>
+              Stop sharing
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="developer-note">
+              Generate a link a friend can open to see your live location on the map and get directions to you -- no
+              account needed on their end. Stops automatically after 4 hours.
+            </p>
+            <button type="button" className="account-panel-submit" onClick={onStartSharing} disabled={shareStarting}>
+              {shareStarting ? 'Finding your location…' : 'Share my location'}
+            </button>
+          </>
+        )}
+      </section>
+
       <section className="you-section">
         <h3 className="you-section-title">Home &amp; work</h3>
         <div className="you-homework-row">
