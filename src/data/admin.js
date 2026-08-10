@@ -48,3 +48,11 @@ export function reviewEditSuggestion(id, decision, note) {
 export function updatePlace(placeId, fields) {
   return callAdminApi('updatePlace', { placeId, fields });
 }
+
+export function previewOsmUpdate(osmExport) {
+  return callAdminApi('previewOsmUpdate', { osmExport });
+}
+
+export function applyOsmUpdate(osmExport) {
+  return callAdminApi('applyOsmUpdate', { osmExport });
+}

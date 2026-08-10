@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { fetchPendingSubmissions, fetchPendingEditSuggestions, reviewSubmission, reviewEditSuggestion, updatePlace } from '../data/admin';
+import {
+  fetchPendingSubmissions,
+  fetchPendingEditSuggestions,
+  reviewSubmission,
+  reviewEditSuggestion,
+  updatePlace,
+  previewOsmUpdate,
+  applyOsmUpdate,
+} from '../data/admin';
 import { CATEGORIES } from '../data/categories';
 import PlaceSelectField from './PlaceSelectField';
 
@@ -173,6 +181,99 @@ function EditPlaceSection({ places }) {
   );
 }
 
+function OsmUpdateSection() {
+  const [preview, setPreview] = useState(null);
+  const [fileName, setFileName] = useState(null);
+  const [osmExport, setOsmExport] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  const [applied, setApplied] = useState(null);
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setApplied(null);
+    setPreview(null);
+    setFileName(file.name);
+    setBusy(true);
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      setOsmExport(parsed);
+      const result = await previewOsmUpdate(parsed);
+      setPreview(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleApply() {
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await applyOsmUpdate(osmExport);
+      setApplied(result);
+      setPreview(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="settings-group">
+      <span className="directions-label">Update campus data from OpenStreetMap</span>
+      <p className="developer-note">
+        Upload a raw Overpass export (overpass-turbo.eu -&gt; run the survey query -&gt; Export -&gt; "raw data", not
+        "GeoJSON") to add new buildings and paths the school has traced since the last update. New items are only ever
+        added, never replacing or removing anything already on the map. Re-uploading the same export you already
+        applied can show inflated "new" counts -- if a number looks surprisingly high for what should be a small
+        update, double-check before applying.
+      </p>
+      <input type="file" accept="application/json,.json" onChange={handleFile} disabled={busy} />
+      {fileName && <p className="developer-note">Selected: {fileName}</p>}
+      {busy && <p className="developer-note">Working…</p>}
+      {error && <p className="account-panel-error">{error}</p>}
+
+      {preview && (
+        <div className="admin-osm-preview">
+          <p className="admin-card-meta">
+            {preview.report.places.new} new place(s), {preview.report.network.newNodes} new node(s),{' '}
+            {preview.report.network.osmEdgesAdded} new edge(s). {preview.report.places.duplicate.length} already on the map
+            (skipped), {preview.report.places.possibleDuplicate.length + preview.report.places.likelyDuplicate.length}{' '}
+            flagged for manual review (not auto-applied either way).
+          </p>
+          {preview.connectivityOk ? (
+            <>
+              <p className="admin-osm-success">Connectivity check passed -- every place stays reachable from School Gate after this update.</p>
+              <button type="button" className="admin-approve admin-osm-apply" disabled={busy} onClick={handleApply}>
+                Apply to live site
+              </button>
+            </>
+          ) : (
+            <p className="admin-card-warning">
+              Blocked: {preview.report.connectivity.placesInDisconnectedComponents.length} place(s) would become
+              unreachable from School Gate. This export can't be applied as-is -- the path network needs fixing first
+              (in OSM or by hand).
+            </p>
+          )}
+        </div>
+      )}
+
+      {applied && (
+        <p className="admin-osm-success">
+          Applied: {applied.insertedPlaces} place(s), {applied.insertedNodes} node(s), {applied.insertedEdges} edge(s)
+          added. Refresh the app to see them on the map.
+        </p>
+      )}
+    </section>
+  );
+}
+
 export default function AdminPanel({ places }) {
   const [submissions, setSubmissions] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
@@ -213,6 +314,7 @@ export default function AdminPanel({ places }) {
       </section>
 
       <EditPlaceSection places={places} />
+      <OsmUpdateSection />
     </div>
   );
 }

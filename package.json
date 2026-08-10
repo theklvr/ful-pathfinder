@@ -13,6 +13,7 @@
     "merge-survey": "node scripts/merge-survey.mjs",
     "promote-submissions": "node supabase/seed/promote_submissions.mjs",
     "prepare-photos": "node scripts/prepare-photos.mjs",
+    "refresh-basemap": "node scripts/refresh-basemap.mjs",
     "test": "node --test src/routing/*.test.js"
   },
   "dependencies": {
